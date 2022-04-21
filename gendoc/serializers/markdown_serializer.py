@@ -106,9 +106,15 @@ class MarkdownSerializer:
                 class_markdown.append(f"+ {self.convert_entity(base)}")
         if entity_class.class_entities:
             for ent in entity_class.class_entities:
-                tmp_list = self.convert_entity_of_code(ent)
-                tmp_list = [f" > {row.strip()}" for row in tmp_list]
-                class_markdown.extend(tmp_list)
+                tmp_list_entity = self.convert_entity_of_code(ent)
+                # _str = f"\n".join(tmp_list_entity).expandtabs().splitlines()
+                # new = _str.expandtabs().splitlines()
+                tmp_list = [
+                    f" > {row.strip()}"
+                    for row in "\n".join(tmp_list_entity).expandtabs().splitlines()
+                ]
+
+                class_markdown.append("\n".join(tmp_list))
         return class_markdown
 
     def convert_function(
@@ -192,7 +198,15 @@ class MarkdownSerializer:
             function_markdown.append("### Decorator(s)")
             for decorators in entity_function.function_decorators:
                 function_markdown.append(f"+ {self.convert_entity(decorators)}")
-        if entity_function.function_args.args:
+        if any(
+            [
+                entity_function.function_args.args,
+                entity_function.function_args.posonlyargs,
+                entity_function.function_args.kwonlyargs,
+                entity_function.function_args.vararg,
+                entity_function.function_args.kwarg,
+            ]
+        ):
             function_markdown.append("### Argument(s)")
             function_markdown.extend(
                 convert_args(
@@ -254,9 +268,16 @@ class MarkdownSerializer:
             )
         if entity_function.function_entities:
             for ent in entity_function.function_entities:
-                tmp_list = self.convert_entity_of_code(ent)
-                tmp_list = [f" > {row.strip()}" for row in tmp_list]
-                function_markdown.extend(tmp_list)
+                tmp_list_entity = self.convert_entity_of_code(ent)
+                # _str = f"\n".join(tmp_list)
+                # new = _str.expandtabs().splitlines()
+                # tmp_list = [f" > {row.strip()}" for row in new]
+                tmp_list = [
+                    f" > {row.strip()}"
+                    for row in "\n".join(tmp_list_entity).expandtabs().splitlines()
+                ]
+
+                function_markdown.append("\n".join(tmp_list))
         return function_markdown
 
     def convert_entity(self, entity: Optional[Entity]) -> Optional[str]:
