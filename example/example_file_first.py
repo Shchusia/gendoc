@@ -24,7 +24,7 @@ tmp_slice = tmp_list[val_2:val_5]
 
 CONST_LAMBDA_FUNCTION = lambda x: x ** 2  # noqa
 
-# assert val_1 > 0, "test"
+assert val_1 > 0, "test"
 
 REGEX = re.compile(r"hello world")
 
@@ -74,7 +74,13 @@ def test_func(arg, *args, **kwargs) -> List[Dict]:
     pass
 
 
-class ExampleClass(ABC):
+class First(ABC):
+    """
+    example class
+    """
+
+
+class ExampleClass(ABC, First):  # type: ignore
     """
     ExampleClass
     """
