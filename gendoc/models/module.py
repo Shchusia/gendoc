@@ -4,7 +4,7 @@ Model for module
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, List, Union
+from typing import Any, List, Optional, Union
 
 from pydantic import BaseModel, Field
 
@@ -15,23 +15,42 @@ class EntityOfCode(BaseModel):
     pass
 
 
+class Entity(EntityOfCode):
+    e_type: EnumTypeVariables = Field(None, description="")
+    e_value: List[Union[Entity, Any]] = Field(None, description="")
+
+
 class Module(BaseModel):
     path_to_file: Path = Field(description="Path to file from root folder")
     module_doc_string: str = Field(description="Doc string for module")
     list_entities: List[EntityOfCode] = Field(None, description="")
 
 
-class Decorators(EntityOfCode):
-    pass
+class Argument(EntityOfCode):
+    arg: str
+    annotation: Entity
+    type_comment: Any
+
+
+class Arguments(EntityOfCode):
+    args: List[Argument] = Field(None, description="")
+    defaults: List[Entity] = Field(None, description="")
+    kw_defaults: List[Entity] = Field(None, description="")
+    kwarg: Optional[Argument] = Field(None, description="")  # **kwarg
+    vararg: Optional[Argument] = Field(None, description="")  # *args
+    posonlyargs: List[Argument] = Field(None, description="")
+    kwonlyargs: List[Argument] = Field(None, description="")
 
 
 class Function(EntityOfCode):
-    pass
-
-
-class Entity(EntityOfCode):
-    e_type: EnumTypeVariables = Field(None, description="")
-    e_value: List[Union[Entity, Any]] = Field(None, description="")
+    function_name: str = Field(None, description="")
+    function_doc_string: str = Field(None, description="")
+    function_args: Arguments = Field(None, description="")
+    function_decorators: List[Entity] = Field(None, description="")
+    function_returns: Entity = Field(None, description="")
+    function_type_comment: Any = Field(None, description="")
+    function_is_async: bool = Field(False, description="")
+    function_entities: List[EntityOfCode] = Field(None, description="")
 
 
 class Assign(EntityOfCode):
