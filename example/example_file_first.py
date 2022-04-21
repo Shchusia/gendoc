@@ -80,12 +80,13 @@ class First(ABC):
     """
 
 
-class ExampleClass(ABC, First):  # type: ignore
+class ExampleClass(ABC, metaclass=First):  # type: ignore
     """
     ExampleClass
     """
 
     _value: str = "example"
+    _value_2 = 2
 
     @property
     def value(self):

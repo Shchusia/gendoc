@@ -48,9 +48,9 @@ class Variable:
 
 
 class Class(EntityOfCode):
-    class_name: str = Field(None, description="")
-    class_decorators: List[str] = Field(None, description="")
-    class_bases: List[str] = Field(None, description="")
-    class_variables: List[EntityOfCode] = Field(None, description="")
-    class_doc_string: str = Field(None, description="Doc string")
+    class_name: str = Field(None, description="Class name")
+    class_doc_string: str = Field(None, description="Class doc string")
+    class_decorators: List[Entity] = Field(None, description="")
+    class_bases: List[Entity] = Field(None, description="")
+    class_keywords: List[Assign] = Field(None, description="")
     class_entities: List[EntityOfCode] = Field(None, description="")

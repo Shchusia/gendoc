@@ -7,7 +7,15 @@ from pathlib import Path
 from typing import List, Optional, Union
 
 from ..doc_generator import DocGenerator
-from ..models import Assign, Entity, EntityOfCode, EnumTypeVariables, Module, Operations
+from ..models import (
+    Assign,
+    Class,
+    Entity,
+    EntityOfCode,
+    EnumTypeVariables,
+    Module,
+    Operations,
+)
 
 
 class PythonDocGenerator(DocGenerator):
@@ -28,6 +36,25 @@ class PythonDocGenerator(DocGenerator):
     ]
     files_to_ignore = ["setup.py"]
 
+    def _parse_body(
+        self,
+        obj: Union[ast.Module, ast.ClassDef, ast.FunctionDef, ast.AsyncFunctionDef],
+    ) -> List[EntityOfCode]:
+        """
+        Method parse object body for parse child
+        :param obj: obj to process
+        :type obj: Union[ast.Module, ast.ClassDef, ast.FunctionDef,
+         ast.AsyncFunctionDef]
+        :return: parsed body
+        :rtype: List[EntityOfCode]
+        """
+        list_entities = list()  # type: List[EntityOfCode]
+        for obj in obj.body:  # type: ignore
+            parsed_obj = self._parse_obj(obj)  # type: ignore
+            if parsed_obj:
+                list_entities.append(parsed_obj)
+        return list_entities
+
     def _parse_obj(self, obj: stmt) -> Optional[EntityOfCode]:
         """
         Method for defining the handler object
@@ -37,41 +64,20 @@ class PythonDocGenerator(DocGenerator):
         :return: type, info
         :rtype:
         """
+
         if isinstance(obj, (ast.Expr, ast.Import, ast.ImportFrom)):
             return None
-        elif isinstance(obj, ast.ClassDef):
-            pass
-        elif isinstance(obj, ast.FunctionDef):
-            pass
-        elif isinstance(obj, ast.AsyncFunctionDef):
-            pass
         elif isinstance(obj, (ast.Assign, ast.AnnAssign)):
             return self._parse_assign(obj)
+        elif isinstance(obj, ast.ClassDef):
+            return self._parse_class(obj)
+        elif isinstance(obj, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            pass
         elif isinstance(obj, ast.Assert):
             pass
         else:
             self._logger.warn("can't parse %s", obj)
         return None
-
-    def _parse_assign(self, obj: Union[ast.Assign, ast.AnnAssign]) -> Assign:
-        """
-        Parse assign
-        :param obj: obj for parse Assign
-        :type: Union[ast.Assign, ast.AnnAssign]
-        :param is_ann: is annotated
-        :type: bool
-        :return: parsed all assigned
-        :rtype: Assign
-        """
-        assign = Assign(value=self._parse_value(obj.value))
-        if isinstance(obj, ast.AnnAssign):
-            assign.name = self._parse_value(obj.target)
-            assign.annotation = self._parse_value(obj.annotation)
-            assign.simple = obj.simple
-        else:
-            assign.name = self._parse_value(obj.targets[0])
-            assign.type_comment = obj.type_comment
-        return assign
 
     def _parse_value(self, obj: ast.expr) -> Entity:
         if obj is None:
@@ -138,8 +144,85 @@ class PythonDocGenerator(DocGenerator):
             self._logger.warn("Not processed: %s", obj)
             return Entity(e_type=EnumTypeVariables.UNPARSE, e_value=[ast.unparse(obj)])
 
-    def _parse_class(self, obj: stmt) -> None:
-        pass
+    def _parse_assign(self, obj: Union[ast.Assign, ast.AnnAssign]) -> Assign:
+        """
+        Parse assign
+        :param obj: obj for parse Assign
+        :type: Union[ast.Assign, ast.AnnAssign]
+        :param is_ann: is annotated
+        :type: bool
+        :return: parsed all assigned
+        :rtype: Assign
+        """
+        assign = Assign(value=self._parse_value(obj.value))
+        if isinstance(obj, ast.AnnAssign):
+            assign.name = self._parse_value(obj.target)
+            assign.annotation = self._parse_value(obj.annotation)
+            assign.simple = obj.simple
+        else:
+            assign.name = self._parse_value(obj.targets[0])
+            assign.type_comment = obj.type_comment
+        return assign
+
+    def _parse_class(self, obj: ast.ClassDef) -> Class:
+        """
+        Method parse class
+        :param obj: current class to parse info
+        :type obj: ast.ClassDef
+        :return: processed class
+        :rtype: Class
+        """
+        clazz = Class(class_name=obj.name)
+        try:
+            class_doc_string = ast.get_docstring(obj)
+        except Exception as exc:
+            class_doc_string = ""
+            self._logger.debug(
+                "Class `%s` don't have class doc string. Err: %s",
+                clazz.class_name,
+                str(exc),
+            )
+        clazz.class_doc_string = class_doc_string
+        clazz.class_decorators = self._parse_decorators(obj)
+        clazz.class_bases = self._parse_basses(obj)
+        clazz.class_entities = self._parse_body(obj)
+        clazz.class_keywords = self._parse_keywords(obj)
+        return clazz
+
+    def _parse_decorators(
+        self, obj: Union[ast.ClassDef, ast.FunctionDef, ast.AsyncFunctionDef]
+    ) -> List[Entity]:
+        """
+        Method get decorators of class or function
+        :param obj: obj to parse
+        :rtype obj: Union[ast.ClassDef, ast.FunctionDef, ast.AsyncFunctionDef]
+        :return:
+        """
+        return [self._parse_value(decorator) for decorator in obj.decorator_list]
+
+    def _parse_basses(self, obj: ast.ClassDef) -> List[Entity]:
+        """
+        Method parse bases class for current
+        :param obj:
+        :type: ast.ClassDef
+        :return: list of bases classes
+        :rtype: List[Entity]
+        """
+        return [self._parse_value(base) for base in obj.bases]
+
+    def _parse_keywords(self, obj: ast.ClassDef) -> List[Assign]:
+        """
+
+        :param obj:
+        :return:
+        """
+        return [
+            Assign(
+                name=Entity(e_type=EnumTypeVariables.NAME, e_value=[key_word.arg]),
+                value=self._parse_value(key_word.value),
+            )
+            for key_word in obj.keywords
+        ]
 
     def _parse_file(self, path_to_file: Path) -> Module:
         """
@@ -156,14 +239,9 @@ class PythonDocGenerator(DocGenerator):
             module_doc_string = ast.get_docstring(tree)
         except Exception:
             module_doc_string = ""
-            self._logger.debug("File don't `%s` have module doc string", path_to_file)
+            self._logger.debug("File `%s` don't have module doc string", path_to_file)
         module = Module(path_to_file=path_to_file, module_doc_string=module_doc_string)
-        list_entities = list()  # type: List[EntityOfCode]
-        for obj in tree.body:
-            parsed_obj = self._parse_obj(obj)
-            if parsed_obj:
-                list_entities.append(parsed_obj)
-        module.list_entities = list_entities
+        module.list_entities = self._parse_body(tree)
         return module
 
     def build_documentation_file(
