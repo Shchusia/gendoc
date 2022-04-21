@@ -72,7 +72,7 @@ class Assign(EntityOfCode):
     name: Entity = Field(None, description="")
     value: Entity = Field(None, description="")
     type_comment: Any = Field(None, description="")
-    annotation: Any = Field(None, description="")
+    annotation: Entity = Field(None, description="")
     simple: Any = Field(None, description="")
 
 

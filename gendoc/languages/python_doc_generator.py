@@ -2,6 +2,7 @@
 Module with doc generator for sphinx doc strings
 """
 import ast
+import os
 from ast import stmt
 from pathlib import Path
 from typing import List, Optional, Union
@@ -18,6 +19,7 @@ from ..models import (
     Operations,
 )
 from ..models.module import Argument, Arguments
+from ..serializers import MarkdownSerializer
 from ..utils.parsers.parser_python_sphinx_docstring import parse_docstring
 
 
@@ -336,7 +338,12 @@ class PythonDocGenerator(DocGenerator):
         """
         self._logger.debug("Started process file: %s", path_to_file)
 
-        self._parse_file(path_to_file)
+        module_data = self._parse_file(path_to_file)
+        strings = MarkdownSerializer().module_to_markdown_string(module_data)
+        file_sr = f"{os.linesep}".join(strings)
+        file_sr = file_sr.replace(f"{os.linesep}{os.linesep}", f"{os.linesep}")
+        with open("mark.md", "w", encoding="utf-8") as file:
+            file.write(file_sr)
 
         self._logger.debug("Finished process file: %s", path_to_file)
-        return None
+        return module_data

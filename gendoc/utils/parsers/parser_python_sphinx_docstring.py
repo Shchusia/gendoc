@@ -26,7 +26,7 @@ RAISES_REGEX = re.compile(
 RETURNS_REGEX = re.compile(f":return:(?P<return_doc>.*?){GENERAL_STOPPERS}", re.S)
 RETURN_TYPE_REGEX = re.compile(f":rtype: (?P<rtype>.*?){GENERAL_STOPPERS}", re.S)
 EXAMPLE_REGEX = re.compile(
-    f"\.\. code-block:: (?P<language>[\*\w\s]+) (?P<example>.*?){GENERAL_STOPPERS}",  # noqa
+    f"\.\. code-block:: (?P<language>[\*\w\s]+)(?P<example>.*?){GENERAL_STOPPERS}",  # noqa
     re.S,
 )
 EXAMPLE_REGEX_2 = re.compile(f":example:(?P<example>.*?){GENERAL_STOPPERS}", re.S)
@@ -103,6 +103,7 @@ def parse_docstring(doc_string: Optional[str] = None) -> Optional[ParsedDocStrin
         match_ex = EXAMPLE_REGEX_2.search(doc_string)
         if match_ex:
             example = strip_rows(match_ex.group("example"))
+    print(example)
     description = ""
     match_description = DESCRIPTION_REGEX.search(doc_string)
     if match_description:

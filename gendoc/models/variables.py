@@ -36,3 +36,7 @@ class Operations(Enum):
     BitXor = "^"
     BitAnd = "&"
     FloorDiv = "//"
+
+
+if __name__ == "__main__":
+    print(EnumTypeVariables.NAME in [EnumTypeVariables.NAME, EnumTypeVariables.BOOL])

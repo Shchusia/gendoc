@@ -23,18 +23,19 @@ tmp_slice = tmp_list[val_2:val_5]
 
 CONST_LAMBDA_FUNCTION = lambda x: x ** 2  # noqa
 
-assert val_1 > 0, "test"
-
 REGEX = re.compile(r"hello world")
 
 
-def decorator_factory(arg1: bool, arg2: int, arg3: float) -> Callable:
+def decorator_factory(arg1: bool, arg2: int = 1, arg3: float = 1) -> Callable:
     """
     Decorator with args
-    :param arg1:
-    :param arg2:
-    :param arg3:
-    :return:
+    :param arg1: argument 1
+    :param arg2: argument 2
+    :param arg3: argument 3
+    :return: callable
+    .. code-block:: python
+    >>> import time
+    >>> time.sleep(2)
     """
 
     def decorator(function):
@@ -53,7 +54,11 @@ def decorator_factory(arg1: bool, arg2: int, arg3: float) -> Callable:
 async def async_function_with_doc_string():
     """
     async function
+    :raises RunTimeError: error in run
     :return:
+    :example:
+    >>> import time
+    >>> time.sleep(2)
     """
     pass
 
@@ -70,6 +75,14 @@ def function_posonlyargs(arg_1, /, arg_2, arg_3):
 
 
 def function_kwonlyargs(arg_1, *, arg_2, arg_3):
+    """
+
+    :param arg_1:
+    :param arg_2:
+    :param arg_3:
+    :return:
+    :example:
+    """
     pass
 
 
