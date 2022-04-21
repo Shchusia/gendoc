@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import List, Optional, Tuple, Union
 
 from .models import GeneralInfo
-from .settings import DEFAULT_SUFFIX
+from .settings import DEFAULT_SUFFIX  # noqa
 
 
 class DocGenerator(ABC):
@@ -37,7 +37,7 @@ class DocGenerator(ABC):
         additional_folders_to_ignore: Optional[List[str]] = None,
     ):
 
-        self.__logger = logger or getLogger(__name__)
+        self._logger = logger or getLogger(__name__)
         if not path_to_root_folder:
             path_to_root_folder = "./"
         if isinstance(path_to_root_folder, str):
@@ -76,7 +76,7 @@ class DocGenerator(ABC):
         self._additional_folders_to_ignore = additional_folders_to_ignore
         self._additional_files_to_ignore = additional_files_to_ignore
 
-        self.__logger.debug("Path to folder: %s", self._root_folder)
+        self._logger.debug("Path to folder: %s", self._root_folder)
 
     @property
     def short_name(self) -> str:
@@ -144,7 +144,7 @@ class DocGenerator(ABC):
             for (dir_path, dir_names, file_names) in os.walk(self._root_folder)
             if file_names
         ]  # type: List[Tuple[Path, List[str]]]
-        self.__logger.debug(list_folders_with_files_to_parse)
+        self._logger.debug(list_folders_with_files_to_parse)
         _current_files_to_ignore = [
             *self.files_to_ignore,
             *self._additional_files_to_ignore,

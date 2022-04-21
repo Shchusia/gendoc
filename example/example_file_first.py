@@ -1,18 +1,32 @@
 """
 First example_file
 """
-# pylint: disable=unused-argument, unnecessary-pass
+# pylint: disable=unused-argument, unnecessary-pass, invalid-name
+import re
 from abc import ABC, abstractmethod
 from typing import Callable, Dict, List
 
-CONST_VAL_FIRST = "first_test_const_value"
+BASE_VALUE = 1  # type: int
+CONST_VAL_FIRST: str = "first_test_const_value"
 CONST_VAL_SECOND = {"value": 1}
 CONST_VAL_THREAD = [
     ("value", 1),
     ("value2", 2),
 ]
 
+val_1, val_2 = 1, 2
+val_3, val_4 = CONST_VAL_THREAD
+val_5 = val_1 + val_2
+
+tmp_list = [*range(4)]
+tmp_slice = tmp_list[val_2:val_5]
+
+
 CONST_LAMBDA_FUNCTION = lambda x: x ** 2  # noqa
+
+# assert val_1 > 0, "test"
+
+REGEX = re.compile(r"hello world")
 
 
 def decorator_factory(arg1: bool, arg2: int, arg3: float) -> Callable:
@@ -35,6 +49,14 @@ def decorator_factory(arg1: bool, arg2: int, arg3: float) -> Callable:
         return wrapper
 
     return decorator
+
+
+async def async_function():
+    """
+    async function
+    :return:
+    """
+    pass
 
 
 @decorator_factory(True, 2, arg3=3)
