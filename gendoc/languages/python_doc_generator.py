@@ -18,6 +18,7 @@ from ..models import (
     Operations,
 )
 from ..models.module import Argument, Arguments
+from ..utils.parsers.parser_python_sphinx_docstring import parse_docstring
 
 
 class PythonDocGenerator(DocGenerator):
@@ -220,7 +221,7 @@ class PythonDocGenerator(DocGenerator):
         Method parse functions
         :param obj:
         :type: Union[ast.FunctionDef, ast.AsyncFunctionDef]
-        :return:
+        :return: parsed function object
         :rtype: Function
         """
         _function = Function(
@@ -231,6 +232,7 @@ class PythonDocGenerator(DocGenerator):
             function_args=self._parse_arguments(obj.args),
             function_entities=self._parse_body(obj, is_inner=True),
             function_type_comment=obj.type_comment,
+            function_parsed_docstring=parse_docstring(ast.get_docstring(obj)),
         )
         if isinstance(obj, ast.AsyncFunctionDef):
             _function.function_is_async = True

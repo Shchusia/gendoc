@@ -42,6 +42,20 @@ class Arguments(EntityOfCode):
     kwonlyargs: List[Argument] = Field(None, description="")
 
 
+class Parameter(BaseModel):
+    param_name: str = Field(None, description="")
+    param_type: str = Field(None, description="")
+    param_description: str = Field(None, description="")
+
+
+class ParsedDocString(BaseModel):
+    description: str = Field(None, description="")
+    args: List[Parameter] = Field(None, description="")
+    raises: List[Parameter] = Field(None, description="")
+    returns: Parameter = Field(None, description="")
+    example: str = Field(None, description="")
+
+
 class Function(EntityOfCode):
     function_name: str = Field(None, description="")
     function_doc_string: str = Field(None, description="")
@@ -51,6 +65,7 @@ class Function(EntityOfCode):
     function_type_comment: Any = Field(None, description="")
     function_is_async: bool = Field(False, description="")
     function_entities: List[EntityOfCode] = Field(None, description="")
+    function_parsed_docstring: Optional[ParsedDocString] = Field(None, description="")
 
 
 class Assign(EntityOfCode):
