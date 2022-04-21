@@ -78,8 +78,6 @@ class MarkdownSerializer:
         name = self.convert_entity(entity_assign.name)
         value = self.convert_entity(entity_assign.value)
         annotation = self.convert_entity(entity_assign.annotation)
-        # print(entity_assign.type_comment)
-        # print(entity_assign.simple)
         row_annotation = ""
         if annotation:
             row_annotation = f": {annotation}"
@@ -88,8 +86,30 @@ class MarkdownSerializer:
         return [f"`{name}`{row_annotation} = {value}"]
 
     def convert_class(self, entity_class: Class) -> List[str]:
+        class_markdown = list()  # type: List[str]
 
-        return []
+        class_markdown.append(f"## Class `{entity_class.class_name}`")
+        if entity_class.class_doc_string:
+            class_markdown.append(
+                f"""```text
+{entity_class.class_doc_string}
+```
+"""
+            )
+        if entity_class.class_decorators:
+            class_markdown.append("### Decorator(s)")
+            for decorators in entity_class.class_decorators:
+                class_markdown.append(f"+ {self.convert_entity(decorators)}")
+        if entity_class.class_bases:
+            class_markdown.append("### Basses(s)")
+            for base in entity_class.class_bases:
+                class_markdown.append(f"+ {self.convert_entity(base)}")
+        if entity_class.class_entities:
+            for ent in entity_class.class_entities:
+                tmp_list = self.convert_entity_of_code(ent)
+                tmp_list = [f" > {row.strip()}" for row in tmp_list]
+                class_markdown.extend(tmp_list)
+        return class_markdown
 
     def convert_function(
         self, entity_function: Function, deep: Optional[int] = 0

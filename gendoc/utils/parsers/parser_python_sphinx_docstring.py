@@ -103,7 +103,6 @@ def parse_docstring(doc_string: Optional[str] = None) -> Optional[ParsedDocStrin
         match_ex = EXAMPLE_REGEX_2.search(doc_string)
         if match_ex:
             example = strip_rows(match_ex.group("example"))
-    print(example)
     description = ""
     match_description = DESCRIPTION_REGEX.search(doc_string)
     if match_description:
