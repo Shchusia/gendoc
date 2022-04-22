@@ -10,8 +10,9 @@ from logging import Logger, getLogger
 from pathlib import Path
 from typing import List, Optional, Tuple, Union
 
-from .models import GeneralInfo
-from .settings import DEFAULT_SUFFIX  # noqa
+from .models import GeneralInfo, Module
+from .serializers.serializer import Serializer
+from .settings import DEFAULT_SUFFIX, AllowedSaveModes
 
 
 class DocGenerator(ABC):
@@ -44,7 +45,17 @@ class DocGenerator(ABC):
             path_to_root_folder = Path(path_to_root_folder)
 
         self._root_folder = path_to_root_folder
-        self._save_mode = save_mode
+        try:
+            self._serializer = AllowedSaveModes[save_mode].value(
+                self.language, self._logger
+            )  # type: Serializer
+        except KeyError:
+            self._logger.warning(
+                "Not allowed `save_mode` - %s. " "Allowed modes: %s",
+                save_mode,
+                [i.name for i in AllowedSaveModes],
+            )
+            return
         self._extract_with_same_hierarchy = strtobool(str(extract_with_same_hierarchy))
         self._overwrite_if_file_exists = strtobool(str(overwrite_if_file_exists))
         self.general_info = GeneralInfo(
@@ -56,12 +67,17 @@ class DocGenerator(ABC):
         )
 
         if not file_to_save:
-            self._file_to_save = self._root_folder.absolute().name + DEFAULT_SUFFIX
+            self._file_to_save = (
+                self._root_folder.absolute().name
+                + DEFAULT_SUFFIX
+                + self._serializer.suffix_file
+            )
         if not path_to_save:
             self._path_to_save = self._root_folder.absolute() / Path(
                 self._root_folder.absolute().name + DEFAULT_SUFFIX
             )
             self._path_to_save.mkdir(exist_ok=True, parents=True)
+            print(self._path_to_save)
         if not additional_files_to_ignore or not isinstance(
             additional_files_to_ignore, Iterable
         ):
@@ -77,6 +93,17 @@ class DocGenerator(ABC):
         self._additional_files_to_ignore = additional_files_to_ignore
 
         self._logger.debug("Path to folder: %s", self._root_folder)
+
+    @property
+    def language(self) -> str:
+        """
+        Property for which language
+        :return: str language
+        :rtype: str
+        :example:
+        >>> language = "python"
+        """
+        raise NotImplementedError
 
     @property
     def short_name(self) -> str:
@@ -123,10 +150,9 @@ class DocGenerator(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def build_documentation_file(self, path_to_file: Path, deep: int = 1) -> List[str]:
+    def build_documentation_file(self, path_to_file: Path) -> Module:
         """Method to overwriting in sub class for concrete ProgramLanguage
         :param Path path_to_file: file for which build documentation
-        :param int optional int deep: at what nesting level is the file
         :return: list[str] docs
         """
         raise NotImplementedError
@@ -139,6 +165,7 @@ class DocGenerator(ABC):
         """
 
         # list_documentation_data = list()  # type: List[Any]
+        list_parsed_modules = list()  # type: List[Module]
         list_folders_with_files_to_parse = [
             (Path(dir_path), file_names)
             for (dir_path, dir_names, file_names) in os.walk(self._root_folder)
@@ -154,12 +181,6 @@ class DocGenerator(ABC):
             *self._additional_folders_to_ignore,
         ]
         for folder_path, list_files in list_folders_with_files_to_parse:
-            if not self._extract_with_same_hierarchy:
-                deep = len(
-                    str(folder_path)[len(str(self._root_folder)) :].split(os.sep)
-                )
-            else:
-                deep = 1
             if folder_path.name in _current_folders_to_ignore:
                 continue
             for file in list_files:
@@ -168,6 +189,51 @@ class DocGenerator(ABC):
                 file_path = Path(file)
                 if file_path.suffix not in self.types_of_file_to_process:
                     continue
-                self.build_documentation_file(
-                    path_to_file=folder_path / file_path, deep=deep
+                list_parsed_modules.append(
+                    self.build_documentation_file(path_to_file=folder_path / file_path)
                 )
+        if self._extract_with_same_hierarchy:
+            for module in list_parsed_modules:
+                relative_path_to_module = str(module.path_to_file.absolute())[
+                    len(str(self._root_folder.absolute())) :
+                ]
+                val = self._path_to_save
+                tmp_path = Path(str(val) + relative_path_to_module)
+                path_to_tmp_root = tmp_path.parent
+                path_to_tmp_root.mkdir(exist_ok=True, parents=True)
+                path_to_save = path_to_tmp_root / Path(
+                    module.path_to_file.stem + self._serializer.suffix_file
+                )
+                self._save_documentation_file(
+                    path_to_save, self._serializer.serialize(module)
+                )
+
+        else:
+            one_documentation = [
+                row
+                for module in list_parsed_modules
+                for row in self._serializer.serialize(module)
+            ]
+            self._save_documentation_file(
+                self._path_to_save / self._file_to_save, one_documentation
+            )
+
+    def _save_documentation_file(
+        self, path_to_save: Path, data_to_save: List[str]
+    ) -> None:
+
+        if not data_to_save:
+            self._logger.warning("Not data to save.")
+            return
+        if os.path.isfile(path_to_save):
+            if not self._overwrite_if_file_exists:
+                self._logger.warning(
+                    "File with same name was exist. "
+                    "Path to save: %s. "
+                    "Change path to save or option "
+                    "`overwrite_if_file_exists` set as True",
+                    path_to_save,
+                )
+        path_to_save.parent.mkdir(exist_ok=True, parents=True)
+        with open(path_to_save, "w", encoding="utf-8") as file:
+            file.write(f"{os.linesep}".join(data_to_save))

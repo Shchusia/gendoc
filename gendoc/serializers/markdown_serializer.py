@@ -2,7 +2,6 @@
 Markdown serializer
 """
 import os
-from logging import Logger, getLogger
 from typing import Any, Dict, List, Optional
 
 from gendoc.models import (
@@ -15,18 +14,18 @@ from gendoc.models import (
     Module,
 )
 from gendoc.models.module import Argument, ParsedDocString
+from gendoc.serializers.serializer import Serializer
 
 
-class MarkdownSerializer:
+class MarkdownSerializer(Serializer):
     """
     Module convert parsed to pretty markdown format
     """
 
-    def __init__(
-        self, language: Optional[str] = "python", logger: Optional[Logger] = None
-    ):
-        self._logger = logger or getLogger(__name__)
-        self._language = language
+    suffix_file = ".MD"
+
+    def serialize(self, module: Module) -> List[str]:
+        return self.module_to_markdown_string(module)
 
     def module_to_markdown_string(self, module: Module) -> List[str]:
         module_markdown = list()  # type:List[str]
@@ -56,9 +55,7 @@ class MarkdownSerializer:
         self._logger.debug("Finished convert module base data")
         return module_data_markdown
 
-    def convert_entity_of_code(
-        self, entity_of_code: EntityOfCode, deep: Optional[int] = 0
-    ) -> List[str]:
+    def convert_entity_of_code(self, entity_of_code: EntityOfCode) -> List[str]:
         """
 
         :param entity_of_code:
@@ -69,7 +66,7 @@ class MarkdownSerializer:
         elif isinstance(entity_of_code, Class):
             return self.convert_class(entity_of_code)
         elif isinstance(entity_of_code, Function):
-            return self.convert_function(entity_of_code, deep=deep + 1)
+            return self.convert_function(entity_of_code)
         else:
             self._logger.warning("Unknown type entity_of_code: %s", entity_of_code)
         return list()
@@ -105,21 +102,12 @@ class MarkdownSerializer:
             for base in entity_class.class_bases:
                 class_markdown.append(f"+ {self.convert_entity(base)}")
         if entity_class.class_entities:
+            class_markdown.append("### SubElement(s)")
             for ent in entity_class.class_entities:
-                tmp_list_entity = self.convert_entity_of_code(ent)
-                # _str = f"\n".join(tmp_list_entity).expandtabs().splitlines()
-                # new = _str.expandtabs().splitlines()
-                tmp_list = [
-                    f" > {row.strip()}"
-                    for row in "\n".join(tmp_list_entity).expandtabs().splitlines()
-                ]
-
-                class_markdown.append("\n".join(tmp_list))
+                class_markdown.append(self.convert_sub_code(ent))
         return class_markdown
 
-    def convert_function(
-        self, entity_function: Function, deep: Optional[int] = 0
-    ) -> List[str]:
+    def convert_function(self, entity_function: Function) -> List[str]:
         def convert_parse_docs(
             parse_docs: Optional[ParsedDocString],
         ) -> Dict[str, Any]:
@@ -267,18 +255,18 @@ class MarkdownSerializer:
 """
             )
         if entity_function.function_entities:
+            function_markdown.append("### SubElement(s)")
             for ent in entity_function.function_entities:
-                tmp_list_entity = self.convert_entity_of_code(ent)
-                # _str = f"\n".join(tmp_list)
-                # new = _str.expandtabs().splitlines()
-                # tmp_list = [f" > {row.strip()}" for row in new]
-                tmp_list = [
-                    f" > {row.strip()}"
-                    for row in "\n".join(tmp_list_entity).expandtabs().splitlines()
-                ]
-
-                function_markdown.append("\n".join(tmp_list))
+                function_markdown.append(self.convert_sub_code(ent))
         return function_markdown
+
+    def convert_sub_code(self, entity: EntityOfCode) -> str:
+        tmp_list_entity = self.convert_entity_of_code(entity)
+        tmp_list = [
+            f" > {row.strip()}"
+            for row in "\n".join(tmp_list_entity).expandtabs().splitlines()
+        ]
+        return "\n".join(tmp_list)
 
     def convert_entity(self, entity: Optional[Entity]) -> Optional[str]:
         if not entity:

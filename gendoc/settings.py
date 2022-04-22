@@ -5,6 +5,8 @@ Settings for work lib
 import logging
 from enum import Enum
 
+from gendoc.serializers import MarkdownSerializer
+
 logging.basicConfig(encoding="utf-8", level=logging.DEBUG)  # type: ignore # noqa
 
 
@@ -13,12 +15,8 @@ class AllowedSaveModes(Enum):
     mods for save documentations
     """
 
-    html = ".html"
-    md = ".md"
+    # html = ".html"
+    md = MarkdownSerializer
 
 
 DEFAULT_SUFFIX = "_doc"
-
-
-if __name__ == "__main__":
-    print(AllowedSaveModes[".md"].value)

@@ -2,7 +2,6 @@
 Module with doc generator for sphinx doc strings
 """
 import ast
-import os
 from ast import stmt
 from pathlib import Path
 from typing import List, Optional, Union
@@ -19,7 +18,6 @@ from ..models import (
     Operations,
 )
 from ..models.module import Argument, Arguments
-from ..serializers import MarkdownSerializer
 from ..utils.parsers.parser_python_sphinx_docstring import parse_docstring
 
 
@@ -28,6 +26,7 @@ class PythonDocGenerator(DocGenerator):
     Class for retrieving information about python module
     """
 
+    language = "python"
     short_name = "py"
     types_of_file_to_process = [".py"]
     folders_to_ignore = [
@@ -325,25 +324,21 @@ class PythonDocGenerator(DocGenerator):
         module.list_entities = self._parse_body(tree)
         return module
 
-    def build_documentation_file(
-        self, path_to_file: Path, deep: int = 1
-    ) -> Optional[Module]:
+    def build_documentation_file(self, path_to_file: Path) -> Module:
         """Method to overwriting in sub class for concrete ProgramLanguage
         :param Path path_to_file: file for which build documentation
         :type path_to_file: Path
-        :param deep: at what nesting level is the file
-        :type deep: Path
         :return: docs
         :rtype: List[str]
         """
         self._logger.debug("Started process file: %s", path_to_file)
 
         module_data = self._parse_file(path_to_file)
-        strings = MarkdownSerializer().module_to_markdown_string(module_data)
-        file_sr = f"{os.linesep}".join(strings)
-        file_sr = file_sr.replace(f"{os.linesep}{os.linesep}", f"{os.linesep}")
-        with open("mark.md", "w", encoding="utf-8") as file:
-            file.write(file_sr)
+        # strings = MarkdownSerializer().module_to_markdown_string(module_data)
+        # file_sr = f"{os.linesep}".join(strings)
+        # file_sr = file_sr.replace(f"{os.linesep}{os.linesep}", f"{os.linesep}")
+        # with open("mark.md", "w", encoding="utf-8") as file:
+        #     file.write(file_sr)
 
         self._logger.debug("Finished process file: %s", path_to_file)
         return module_data
