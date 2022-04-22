@@ -13,7 +13,7 @@ def entry_point():
     pass
 
 
-@entry_point.command("init", help="Setup config file for generating documentation")
+@entry_point.command("init", help="To init config file for generating documentation.")
 @click.option(
     "-f",
     "--file-config",
@@ -42,7 +42,7 @@ def init(file_config: str, overwrite: bool):
     print(welcome_string)
 
 
-@entry_point.command("build", help="build documentation")
+@entry_point.command("build", help="Build documentation")
 @click.argument(
     "language",
     required=False,
@@ -55,7 +55,7 @@ def init(file_config: str, overwrite: bool):
     "save_mode",
     required=False,
     default="md",
-    help="save mode",
+    help="Save mode",
     type=click.Choice([i.name for i in AllowedSaveModes]),
 )
 @click.option(
@@ -65,7 +65,7 @@ def init(file_config: str, overwrite: bool):
     is_flag=True,
     required=False,
     default=True,
-    help="extract with same hierarchy",
+    help="Extract with same hierarchy",
     type=bool,
 )
 @click.option(
@@ -75,7 +75,7 @@ def init(file_config: str, overwrite: bool):
     is_flag=True,
     required=False,
     default=True,
-    help="for overwriting if file exist",
+    help="For overwriting if file exist",
     type=bool,
 )
 @click.option(
@@ -84,7 +84,7 @@ def init(file_config: str, overwrite: bool):
     "path_to_root",
     required=False,
     default=None,
-    help="path to the directory for which documentation should be compiled",
+    help="Path to the directory for which documentation should be compiled",
     type=str,
 )
 @click.option(
@@ -93,7 +93,7 @@ def init(file_config: str, overwrite: bool):
     "path_to_save",
     required=False,
     default=None,
-    help="path to the directory where to save docs",
+    help="Path to the directory where to save docs",
     type=str,
 )
 @click.option(
@@ -102,7 +102,7 @@ def init(file_config: str, overwrite: bool):
     "file_to_save",
     required=False,
     default=None,
-    help="path to the directory where to save docs",
+    help="Path to the directory where to save docs",
     type=str,
 )
 @click.option(

@@ -38,7 +38,7 @@ class DocGenerator(ABC):
         additional_folders_to_ignore: Optional[List[str]] = None,
     ):
         """
-
+        Init config loader
         :param logger:
         :param path_to_root_folder: path to the directory for which
          documentation should be compiled
@@ -47,15 +47,17 @@ class DocGenerator(ABC):
         :param overwrite_if_file_exists: for overwriting if file exist
         :param path_to_save: path to the directory where to save docs
         :param file_to_save: name_file to save
-        :param save_mode:
+        :param save_mode: save mode
         :param title: title for header
         :param repository_main_url: url of the repository where this project
          is located
-        :param author:
-        :param author_contacts:
-        :param release:
-        :param additional_files_to_ignore:
-        :param additional_folders_to_ignore:
+        :param author: author of the documented project
+        :param author_contacts: contacts author
+        :param release: release project
+        :param additional_files_to_ignore: additional files that should not
+         be included in the documentation
+        :param additional_folders_to_ignore: additional directories not
+         included in documentation
         """
 
         self._logger = logger or getLogger(__name__)
@@ -185,14 +187,10 @@ class DocGenerator(ABC):
         """
         raise NotImplementedError
 
-    def build_documentation(self) -> None:
+    def build_documentation(self):
         """
         Main function in build documentation
-        :return: Path to doc file or root documentation folder
-        :rtype: Path
         """
-
-        # list_documentation_data = list()  # type: List[Any]
         list_parsed_modules = list()  # type: List[Module]
         list_folders_with_files_to_parse = [
             (Path(dir_path), file_names)
@@ -237,7 +235,6 @@ class DocGenerator(ABC):
                 self._save_documentation_file(
                     path_to_save, self._serializer.serialize(module)
                 )
-
         else:
             one_documentation = [
                 row
@@ -252,6 +249,13 @@ class DocGenerator(ABC):
     def _is_correct_folder_to_process(
         folder: str, folders_to_ignore: List[str]
     ) -> bool:
+        """
+        method checks whether the specified directory
+         should be processed
+        :param str folder: current folder to process
+        :param List[str] folders_to_ignore: folders in exclusion
+        :return: true if need to process
+        """
         for ig_folder in folders_to_ignore:
             if ig_folder == folder[: len(ig_folder)]:
                 return False
@@ -260,6 +264,11 @@ class DocGenerator(ABC):
     def _save_documentation_file(
         self, path_to_save: Path, data_to_save: List[str]
     ) -> None:
+        """
+        Method save data to file
+        :param Path path_to_save: path to file
+        :param List[str] data_to_save: data to save
+        """
 
         if not data_to_save:
             self._logger.warning("Not data to save.")

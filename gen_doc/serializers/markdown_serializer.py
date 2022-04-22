@@ -28,6 +28,11 @@ class MarkdownSerializer(Serializer):
         return self.module_to_markdown_string(module)
 
     def module_to_markdown_string(self, module: Module) -> List[str]:
+        """
+        Serializer Module to markdown
+        :param Module module:
+        :return: serialized module to list[str]
+        """
         module_markdown = list()  # type:List[str]
         module_markdown.extend(self.convert_module_data(module))
         for entity in module.list_entities:
@@ -57,9 +62,9 @@ class MarkdownSerializer(Serializer):
 
     def convert_entity_of_code(self, entity_of_code: EntityOfCode) -> List[str]:
         """
-
-        :param entity_of_code:
-        :return:
+        Method convert base entity of code to list[str]
+        :param EntityOfCode entity_of_code: entity of code
+        :return: serialized entity
         """
         if isinstance(entity_of_code, Assign):
             return self.convert_assign(entity_of_code)
@@ -72,6 +77,11 @@ class MarkdownSerializer(Serializer):
         return list()
 
     def convert_assign(self, entity_assign: Assign) -> List[str]:
+        """
+        Convert assign
+        :param Assign entity_assign: Assign object
+        :return: Serialized Assign
+        """
         name = self.convert_entity(entity_assign.name)
         value = self.convert_entity(entity_assign.value)
         annotation = self.convert_entity(entity_assign.annotation)
@@ -83,6 +93,11 @@ class MarkdownSerializer(Serializer):
         return [f"`{name}`{row_annotation} = {value}"]
 
     def convert_class(self, entity_class: Class) -> List[str]:
+        """
+        Method serialize class
+        :param Class entity_class: entity class
+        :return: serialized class
+        """
         class_markdown = list()  # type: List[str]
 
         class_markdown.append(f"## Class `{entity_class.class_name}`")
@@ -108,6 +123,12 @@ class MarkdownSerializer(Serializer):
         return class_markdown
 
     def convert_function(self, entity_function: Function) -> List[str]:
+        """
+        Method to convert Function
+        :param Function entity_function: entity function
+        :return: serialized function
+        """
+
         def convert_parse_docs(
             parse_docs: Optional[ParsedDocString],
         ) -> Dict[str, Any]:
@@ -269,6 +290,11 @@ class MarkdownSerializer(Serializer):
         return "\n".join(tmp_list)
 
     def convert_entity(self, entity: Optional[Entity]) -> Optional[str]:
+        """
+        Convert entities
+        :param Entity entity: entity
+        :return: Optional[str] base str
+        """
         if not entity:
             return None
         if entity.e_type == EnumTypeVariables.NONE:
