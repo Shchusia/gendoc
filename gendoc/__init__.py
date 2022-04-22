@@ -3,6 +3,8 @@ Import
 """
 
 from .doc_generator import DocGenerator
-from .languages import PythonDocGenerator
+from .extensions import PythonDocGenerator
 
-__all__ = ["DocGenerator"]
+__all__ = ["DocGenerator", "PythonDocGenerator"]
+
+__version__ = "0.1.1"

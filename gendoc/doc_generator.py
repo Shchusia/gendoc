@@ -27,7 +27,7 @@ class DocGenerator(ABC):
         extract_with_same_hierarchy: Optional[bool] = True,
         overwrite_if_file_exists: Optional[bool] = False,
         path_to_save: Optional[Path] = None,
-        file_to_save: Optional[str] = None,
+        file_to_save: Optional[Union[str, Path]] = None,
         save_mode: Optional[str] = "md",
         title: Optional[str] = None,
         repository_main_url: Optional[str] = None,
@@ -37,6 +37,26 @@ class DocGenerator(ABC):
         additional_files_to_ignore: Optional[List[str]] = None,
         additional_folders_to_ignore: Optional[List[str]] = None,
     ):
+        """
+
+        :param logger:
+        :param path_to_root_folder: path to the directory for which
+         documentation should be compiled
+        :param extract_with_same_hierarchy: if False extract all to one file
+         if True create file for every file'
+        :param overwrite_if_file_exists: for overwriting if file exist
+        :param path_to_save: path to the directory where to save docs
+        :param file_to_save: name_file to save
+        :param save_mode:
+        :param title: title for header
+        :param repository_main_url: url of the repository where this project
+         is located
+        :param author:
+        :param author_contacts:
+        :param release:
+        :param additional_files_to_ignore:
+        :param additional_folders_to_ignore:
+        """
 
         self._logger = logger or getLogger(__name__)
         if not path_to_root_folder:
@@ -67,17 +87,25 @@ class DocGenerator(ABC):
         )
 
         if not file_to_save:
-            self._file_to_save = (
+            self._file_to_save = Path(
                 self._root_folder.absolute().name
                 + DEFAULT_SUFFIX
                 + self._serializer.suffix_file
             )
+        else:
+            self._file_to_save = Path(file_to_save)
+            if self._file_to_save.suffix != self._serializer.suffix_file:
+                self._file_to_save = Path(
+                    self._file_to_save.name + self._serializer.suffix_file
+                )
         if not path_to_save:
-            self._path_to_save = self._root_folder.absolute() / Path(
+            self._path_to_save = self._root_folder.absolute().parent / Path(
                 self._root_folder.absolute().name + DEFAULT_SUFFIX
             )
             self._path_to_save.mkdir(exist_ok=True, parents=True)
-            print(self._path_to_save)
+        else:
+            self._path_to_save = Path(path_to_save)
+            self._path_to_save.mkdir(parents=True, exist_ok=True)
         if not additional_files_to_ignore or not isinstance(
             additional_files_to_ignore, Iterable
         ):
@@ -181,7 +209,9 @@ class DocGenerator(ABC):
             *self._additional_folders_to_ignore,
         ]
         for folder_path, list_files in list_folders_with_files_to_parse:
-            if folder_path.name in _current_folders_to_ignore:
+            if not self._is_correct_folder_to_process(
+                str(folder_path), _current_folders_to_ignore
+            ):
                 continue
             for file in list_files:
                 if file in _current_files_to_ignore:
@@ -217,6 +247,15 @@ class DocGenerator(ABC):
             self._save_documentation_file(
                 self._path_to_save / self._file_to_save, one_documentation
             )
+
+    @staticmethod
+    def _is_correct_folder_to_process(
+        folder: str, folders_to_ignore: List[str]
+    ) -> bool:
+        for ig_folder in folders_to_ignore:
+            if ig_folder == folder[: len(ig_folder)]:
+                return False
+        return True
 
     def _save_documentation_file(
         self, path_to_save: Path, data_to_save: List[str]

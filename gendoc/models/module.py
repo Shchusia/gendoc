@@ -22,7 +22,7 @@ class Entity(EntityOfCode):
 
 class Module(BaseModel):
     path_to_file: Path = Field(description="Path to file from root folder")
-    module_doc_string: str = Field(description="Doc string for module")
+    module_doc_string: Optional[str] = Field(None, description="Doc string for module")
     list_entities: List[EntityOfCode] = Field(None, description="")
 
 

@@ -142,6 +142,8 @@ class PythonDocGenerator(DocGenerator):
                     self._parse_value(obj.operand),
                 ],
             )
+        elif obj == Ellipsis:
+            return Entity(e_type=EnumTypeVariables.NAME, e_value=["..."])
 
         else:
             self._logger.warn("Not processed: %s", obj)
@@ -267,7 +269,7 @@ class PythonDocGenerator(DocGenerator):
         )
         vararg = (
             None
-            if not obj.kwarg
+            if not obj.vararg
             else Argument(
                 arg=obj.vararg.arg,
                 annotation=self._parse_value(obj.vararg.annotation),
@@ -334,11 +336,6 @@ class PythonDocGenerator(DocGenerator):
         self._logger.debug("Started process file: %s", path_to_file)
 
         module_data = self._parse_file(path_to_file)
-        # strings = MarkdownSerializer().module_to_markdown_string(module_data)
-        # file_sr = f"{os.linesep}".join(strings)
-        # file_sr = file_sr.replace(f"{os.linesep}{os.linesep}", f"{os.linesep}")
-        # with open("mark.md", "w", encoding="utf-8") as file:
-        #     file.write(file_sr)
 
         self._logger.debug("Finished process file: %s", path_to_file)
         return module_data

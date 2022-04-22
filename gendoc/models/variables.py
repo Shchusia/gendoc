@@ -36,6 +36,8 @@ class Operations(Enum):
     BitXor = "^"
     BitAnd = "&"
     FloorDiv = "//"
+    USub = "-"
+    UAdd = "+"
 
 
 if __name__ == "__main__":

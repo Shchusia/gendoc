@@ -1,0 +1,20 @@
+PROJECT:
+  # your project name
+  title: ""
+  repository: ""
+  release: "0.0.1"
+AUTHOR:
+  author: ""
+  author_contacts: []
+OPTIONS:
+  # allowed languages [py]
+  language: "py"
+  path_to_root_folder: ""
+  extract_with_same_hierarchy: True
+  overwrite_if_file_exists: False
+  path_to_save: ""
+  file_to_save: ""
+  # allowed mods [md]
+  save_mode: "md"
+  additional_files_to_ignore: ""
+  additional_folders_to_ignore: ""

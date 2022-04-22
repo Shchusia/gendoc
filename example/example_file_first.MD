@@ -66,6 +66,7 @@ async function
 ## Function  `function_without_doc_string`
 ### Argument(s)
 + `arg1` - empty doc string
++ *`args` - empty doc string
 #### Declared returns: `None`
 ## Function  `function_posonlyargs`
 ### Argument(s)
