@@ -5,7 +5,7 @@ Settings for work lib
 import logging
 from enum import Enum
 
-from gendoc.serializers import MarkdownSerializer
+from gen_doc.serializers import MarkdownSerializer
 
 logging.basicConfig(encoding="utf-8", level=logging.DEBUG)  # type: ignore # noqa
 

@@ -4,7 +4,7 @@ Module with python sphinx doc_string
 import re
 from typing import Dict, Optional, Tuple
 
-from gendoc.models import Parameter, ParsedDocString
+from gen_doc.models import Parameter, ParsedDocString
 
 GENERAL_STOPPERS = r"(?:(?=:param)|(?=:return)|(?=:raises)|(?=:type)|(?=:rtype)|(?=:example)|(?=\.\. code-block::)|\Z)"  # noqa
 

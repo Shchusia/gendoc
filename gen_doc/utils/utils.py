@@ -1,8 +1,8 @@
 import inspect
 from typing import Dict
 
-import gendoc.extensions as extensions
-from gendoc import DocGenerator
+import gen_doc.extensions as extensions
+from gen_doc import DocGenerator
 
 
 def get_extensions() -> Dict[str, DocGenerator]:

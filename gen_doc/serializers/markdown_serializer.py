@@ -4,7 +4,7 @@ Markdown serializer
 import os
 from typing import Any, Dict, List, Optional
 
-from gendoc.models import (
+from gen_doc.models import (
     Assign,
     Class,
     Entity,
@@ -13,8 +13,8 @@ from gendoc.models import (
     Function,
     Module,
 )
-from gendoc.models.module import Argument, ParsedDocString
-from gendoc.serializers.serializer import Serializer
+from gen_doc.models.module import Argument, ParsedDocString
+from gen_doc.serializers.serializer import Serializer
 
 
 class MarkdownSerializer(Serializer):

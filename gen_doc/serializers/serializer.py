@@ -5,7 +5,7 @@ from abc import ABC, abstractmethod
 from logging import Logger, getLogger
 from typing import List, Optional
 
-from gendoc.models import Module
+from gen_doc.models import Module
 
 
 class Serializer(ABC):

@@ -3,10 +3,9 @@ commands to build documentation
 """
 import click
 
-from gendoc import DocGenerator
-from gendoc.settings import AllowedSaveModes
-from gendoc.utils.config_handler import copy_config, load_config
-from gendoc.utils.utils import get_extensions
+from gen_doc.settings import AllowedSaveModes
+from gen_doc.utils.config_handler import copy_config, load_config
+from gen_doc.utils.utils import get_extensions
 
 
 @click.group()
@@ -140,7 +139,12 @@ def build(
     extensions = get_extensions()
     if config:
         configs = load_config(file_config)
-        if not config:
+        if configs is None:
+            print(
+                "Not exist config file for build. Use `gen_doc init` for init config."
+            )
+            return
+        elif not configs:
             print("Specified incorrect or broken file")
             return
         options = configs.get("OPTIONS", dict())
@@ -177,7 +181,7 @@ def build(
             release=project.get("release"),
             author=author.get("author"),
             author_contacts=author.get("author_contacts"),
-        )  # type: DocGenerator
+        )
     else:
         parser = extensions[language](
             path_to_root_folder=path_to_root,

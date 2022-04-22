@@ -23,7 +23,7 @@ def load_config(file_name_to_save: str) -> Optional[Dict[str, Any]]:
         return config
     except Exception as exc:
         logging.warning("Error in time load config. Error: %s", str(exc), exc_info=True)
-    return None
+    return dict()
 
 
 def copy_config(file_name_to_save: str, overwrite: bool) -> bool:
