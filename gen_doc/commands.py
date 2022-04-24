@@ -112,7 +112,7 @@ def init(file_config: str, overwrite: bool):
     is_flag=True,
     required=False,
     default=False,
-    help="Config file name",
+    help="Use config for setup documentation.",
     type=bool,
 )
 @click.option(
