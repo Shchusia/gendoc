@@ -1,13 +1,11 @@
-"""
-Module with doc generator for sphinx doc strings
-"""
 import ast
 from ast import stmt
 from pathlib import Path
 from typing import List, Optional, Union
 
-from ..doc_generator import DocGenerator
-from ..models import (
+from gen_doc.extensions.parser import GenDocParser
+
+from ...models import (
     Assign,
     Class,
     Entity,
@@ -17,11 +15,11 @@ from ..models import (
     Module,
     Operations,
 )
-from ..models.module import Argument, Arguments
-from ..utils.parsers.parser_python_sphinx_docstring import parse_docstring
+from ...models.module import Argument, Arguments
+from .utils.parser_python_sphinx_docstring import parse_docstring
 
 
-class PythonDocGenerator(DocGenerator):
+class GenDocPythonParser(GenDocParser):
     """
     Class for retrieving information about python module
     """
@@ -326,7 +324,7 @@ class PythonDocGenerator(DocGenerator):
         module.list_entities = self._parse_body(tree)
         return module
 
-    def build_documentation_file(self, path_to_file: Path) -> Module:
+    def parse_file(self, path_to_file: Path):
         """Method to overwriting in sub class for concrete ProgramLanguage
         :param Path path_to_file: file for which build documentation
         :type path_to_file: Path

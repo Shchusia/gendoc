@@ -3,9 +3,10 @@ commands to build documentation
 """
 import click
 
-from gen_doc.settings import AllowedSaveModes
+from gen_doc.doc_generator import DocGenerator
+from gen_doc.extensions import GenDocParsers
+from gen_doc.serializers import GenDocSerializers
 from gen_doc.utils.config_handler import copy_config, load_config
-from gen_doc.utils.utils import get_extensions
 
 
 @click.group()
@@ -47,7 +48,7 @@ def init(file_config: str, overwrite: bool):
     "language",
     required=False,
     default="py",
-    type=click.Choice(list(get_extensions().keys())),
+    type=click.Choice([i.name for i in GenDocParsers]),
 )
 @click.option(
     "-sm",
@@ -56,7 +57,7 @@ def init(file_config: str, overwrite: bool):
     required=False,
     default="md",
     help="Save mode",
-    type=click.Choice([i.name for i in AllowedSaveModes]),
+    type=click.Choice([i.name for i in GenDocSerializers]),
 )
 @click.option(
     "-hi",
@@ -136,7 +137,6 @@ def build(
     file_to_save,
     file_config,
 ):
-    extensions = get_extensions()
     if config:
         configs = load_config(file_config)
         if configs is None:
@@ -150,20 +150,20 @@ def build(
         options = configs.get("OPTIONS", dict())
         author = configs.get("AUTHOR", dict())
         project = configs.get("PROJECT", dict())
-
+        allowed_parsers = [parser.name for parser in GenDocParsers]
         if "language" not in options:
             print(
                 "Please don't drop required fields from config. "
                 "Add field `language` to config and try again."
             )
             return
-        if options["language"] not in extensions:
+        if options["language"] not in allowed_parsers:
             print(
                 f"You specified an unavailable value for languages. "
-                f"Available values {list(extensions.keys())}"
+                f"Available values {allowed_parsers}"
             )
-
-        parser = extensions[options["language"]](
+            return
+        parser = DocGenerator(
             path_to_root_folder=options.get("path_to_root_folder", None),
             extract_with_same_hierarchy=options.get(
                 "extract_with_same_hierarchy", True
@@ -183,7 +183,7 @@ def build(
             author_contacts=author.get("author_contacts"),
         )
     else:
-        parser = extensions[language](
+        parser = DocGenerator(
             path_to_root_folder=path_to_root,
             extract_with_same_hierarchy=hierarchically,
             overwrite_if_file_exists=overwrite,
@@ -191,7 +191,7 @@ def build(
             file_to_save=file_to_save,
             save_mode=save_mode,
         )
-    parser.build_documentation()
+    parser.generate()
 
 
 if __name__ == "__main__":

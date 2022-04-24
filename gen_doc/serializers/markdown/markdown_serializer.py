@@ -14,17 +14,18 @@ from gen_doc.models import (
     Module,
 )
 from gen_doc.models.module import Argument, ParsedDocString
-from gen_doc.serializers.serializer import Serializer
+from gen_doc.serializers.serializer import GenDocSerializer
 
 
-class MarkdownSerializer(Serializer):
+class MarkdownSerializer(GenDocSerializer):
     """
     Module convert parsed to pretty markdown format
     """
 
+    short_name = "md"
     suffix_file = ".MD"
 
-    def serialize(self, module: Module) -> List[str]:
+    def serialize_module(self, module: Module, *args, **kwargs) -> List[str]:
         return self.module_to_markdown_string(module)
 
     def module_to_markdown_string(self, module: Module) -> List[str]:
