@@ -1,3 +1,7 @@
+"""
+Module with parsings for python files
+"""
+# pylint: disable=too-many-branches,too-many-return-statements,no-else-return,broad-except  # noqa
 import ast
 from ast import stmt
 from pathlib import Path
@@ -17,6 +21,8 @@ from ...models import (
 )
 from ...models.module import Argument, Arguments
 from .utils.parser_python_sphinx_docstring import parse_docstring
+
+ARGUMENTS_TO_IGNORE = ["self"]
 
 
 class GenDocPythonParser(GenDocParser):
@@ -65,7 +71,7 @@ class GenDocPythonParser(GenDocParser):
         :param obj: object to process if exist handler
         :type obj: stmt
         :return: type, info
-        :rtype:
+        :rtype: Optional[EntityOfCode]
         """
 
         if isinstance(obj, (ast.Expr, ast.Import, ast.ImportFrom, ast.Assert)):
@@ -252,6 +258,7 @@ class GenDocPythonParser(GenDocParser):
                 type_comment=arg.type_comment,
             )
             for arg in obj.args
+            if arg.arg not in ARGUMENTS_TO_IGNORE
         ]
         defaults = [self._parse_value(default) for default in obj.defaults]
         kw_defaults = [self._parse_value(default) for default in obj.kw_defaults]
@@ -306,8 +313,8 @@ class GenDocPythonParser(GenDocParser):
         Reads the file and starts the parsing process
         :param path_to_file: path to the file to be processed
         :type: Path
-        :return: with extracted information from file
-        :rtype:
+        :return: module with extracted information from file
+        :rtype: Module
         """
         file_to_parse = open(path_to_file, "r", encoding="utf-8").read()
         tree = ast.parse(file_to_parse)
