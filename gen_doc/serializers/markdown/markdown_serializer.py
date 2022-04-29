@@ -80,12 +80,13 @@ class MarkdownSerializer(GenDocSerializer):
         self._logger.debug("Started convert module base data")
         module_data_markdown = list()  # type:List[str]
         module_data_markdown.append(f"# Module `{module.path_to_file.name}`")
-        module_data_markdown.append(
-            f"""```text
+        if module.module_doc_string:
+            module_data_markdown.append(
+                f"""```text
 {module.module_doc_string}
 ```
 """
-        )
+            )
         module_data_markdown.append(f"> Path: `{module.path_to_file}`")
         self._logger.debug("Finished convert module base data")
         return module_data_markdown
