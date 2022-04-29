@@ -10,6 +10,14 @@ pip install gen_doc
 + aggregates all `.py` files to one (or same hierarchy folder) `.md` files
 + collects all classes and methods with information about them
 
+### How to use:
+
++ install the library
++ open the terminal in the folder with the project for which you want to create documentation
++ run the command `gen_doc init`
++ make changes to the config file
++ run the command `gen_doc build -c`
+
 ### Details
 
 ```text
