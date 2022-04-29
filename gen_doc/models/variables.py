@@ -1,5 +1,5 @@
 """
-
+Additional entities
 """
 # pylint: disable=invalid-name
 from enum import Enum
@@ -38,7 +38,3 @@ class Operations(Enum):
     FloorDiv = "//"
     USub = "-"
     UAdd = "+"
-
-
-if __name__ == "__main__":
-    print(EnumTypeVariables.NAME in [EnumTypeVariables.NAME, EnumTypeVariables.BOOL])

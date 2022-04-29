@@ -1,13 +1,16 @@
 """
-Module with doc generator for sphinx doc strings
+Module with parser for python files
+Sphinx docstrings
 """
+# pylint: disable=too-many-branches,too-many-return-statements,no-else-return,broad-except  # noqa
 import ast
 from ast import stmt
 from pathlib import Path
 from typing import List, Optional, Union
 
-from ..doc_generator import DocGenerator
-from ..models import (
+from gen_doc.extensions.parser import GenDocParser
+
+from ...models import (
     Assign,
     Class,
     Entity,
@@ -17,13 +20,15 @@ from ..models import (
     Module,
     Operations,
 )
-from ..models.module import Argument, Arguments
-from ..utils.parsers.parser_python_sphinx_docstring import parse_docstring
+from ...models.module import Argument, Arguments
+from .utils.parser_python_sphinx_docstring import parse_docstring
+
+ARGUMENTS_TO_IGNORE = ["self"]
 
 
-class PythonDocGenerator(DocGenerator):
+class GenDocPythonParser(GenDocParser):
     """
-    Class for retrieving information about python module
+    Class to retrieve information about the python module
     """
 
     language = "python"
@@ -45,8 +50,7 @@ class PythonDocGenerator(DocGenerator):
         obj: Union[ast.Module, ast.ClassDef, ast.FunctionDef, ast.AsyncFunctionDef],
         is_inner: bool = False,
     ) -> List[EntityOfCode]:
-        """
-        Method parse object body for parse child
+        """Method to parse object body for parse child
         :param obj: obj to process
         :type obj: Union[ast.Module, ast.ClassDef, ast.FunctionDef,
          ast.AsyncFunctionDef]
@@ -61,13 +65,12 @@ class PythonDocGenerator(DocGenerator):
         return list_entities
 
     def _parse_obj(self, obj: stmt, is_inner: bool) -> Optional[EntityOfCode]:
-        """
-        Method for defining the handler object
-        the method contains all objects for analysis
+        """Method to define the handler object
+        the method contains all the objects for analysis
         :param obj: object to process if exist handler
         :type obj: stmt
         :return: type, info
-        :rtype:
+        :rtype: Optional[EntityOfCode]
         """
 
         if isinstance(obj, (ast.Expr, ast.Import, ast.ImportFrom, ast.Assert)):
@@ -83,6 +86,12 @@ class PythonDocGenerator(DocGenerator):
         return None
 
     def _parse_value(self, obj: ast.expr) -> Entity:
+        """Method to parse expression
+        :param obj: obj to parse
+        :type obj: ast.expr
+        :return: parsed entity
+        :rtype: Entity
+        """
         if obj is None:
             return Entity(e_type=EnumTypeVariables.NONE, e_value=[None])
         elif obj in [True, False]:
@@ -151,8 +160,8 @@ class PythonDocGenerator(DocGenerator):
 
     def _parse_assign(self, obj: Union[ast.Assign, ast.AnnAssign]) -> Assign:
         """
-        Parse assign
-        :param obj: obj for parse Assign
+        Parsing assigner
+        :param obj: object for Parsing Assigner
         :type: Union[ast.Assign, ast.AnnAssign]
         :return: parsed all assigned
         :rtype: Assign
@@ -168,9 +177,8 @@ class PythonDocGenerator(DocGenerator):
         return assign
 
     def _parse_class(self, obj: ast.ClassDef) -> Class:
-        """
-        Method parse class
-        :param obj: current class to parse info
+        """Method to parse a class
+        :param obj: current class to parse info from
         :type obj: ast.ClassDef
         :return: processed class
         :rtype: Class
@@ -185,18 +193,17 @@ class PythonDocGenerator(DocGenerator):
     def _parse_decorators(
         self, obj: Union[ast.ClassDef, ast.FunctionDef, ast.AsyncFunctionDef]
     ) -> List[Entity]:
-        """
-        Method get decorators of class or function
-        :param obj: obj to parse
-        :rtype obj: Union[ast.ClassDef, ast.FunctionDef, ast.AsyncFunctionDef]
-        :return:
+        """Method to get decorators of a class or a function
+        :param obj: current object to parse info from
+        :type obj: Union[ast.ClassDef, ast.FunctionDef, ast.AsyncFunctionDef]
+        :return: list of decorators
+        :rtype: List[Entity]
         """
         return [self._parse_value(decorator) for decorator in obj.decorator_list]
 
     def _parse_basses(self, obj: ast.ClassDef) -> List[Entity]:
-        """
-        Method parse bases class for current
-        :param obj:
+        """Method to parse bases for the current class
+        :param obj: current class to parse info from
         :type: ast.ClassDef
         :return: list of bases classes
         :rtype: List[Entity]
@@ -204,10 +211,11 @@ class PythonDocGenerator(DocGenerator):
         return [self._parse_value(base) for base in obj.bases]
 
     def _parse_keywords(self, obj: ast.ClassDef) -> List[Assign]:
-        """
-
-        :param obj:
-        :return:
+        """Parse of keywords
+        :param obj: current class to parse info from
+        :type: ast.ClassDef
+        :return: list parsed keywords
+        :rtype: List[Entity]
         """
         return [
             Assign(
@@ -220,9 +228,8 @@ class PythonDocGenerator(DocGenerator):
     def _parse_function(
         self, obj: Union[ast.FunctionDef, ast.AsyncFunctionDef]
     ) -> Function:
-        """
-        Method parse functions
-        :param obj:
+        """Method to parse functions
+        :param obj: current function to parse info from
         :type: Union[ast.FunctionDef, ast.AsyncFunctionDef]
         :return: parsed function object
         :rtype: Function
@@ -242,10 +249,10 @@ class PythonDocGenerator(DocGenerator):
         return _function
 
     def _parse_arguments(self, obj: ast.arguments) -> Arguments:
-        """
-        Method parse arguments function
-        :param obj:
-        :return:
+        """Method to parse arguments functions
+        :param obj: current function to parse info from
+        :return: parsed arguments of function
+        :rtype: Arguments
         """
         args = [
             Argument(
@@ -254,6 +261,7 @@ class PythonDocGenerator(DocGenerator):
                 type_comment=arg.type_comment,
             )
             for arg in obj.args
+            if arg.arg not in ARGUMENTS_TO_IGNORE
         ]
         defaults = [self._parse_value(default) for default in obj.defaults]
         kw_defaults = [self._parse_value(default) for default in obj.kw_defaults]
@@ -303,13 +311,12 @@ class PythonDocGenerator(DocGenerator):
         )
 
     def _parse_file(self, path_to_file: Path) -> Module:
-        """
-        Main processing method
+        """Main processing method
         Reads the file and starts the parsing process
         :param path_to_file: path to the file to be processed
         :type: Path
-        :return: with extracted information from file
-        :rtype:
+        :return: module with extracted information from the input file
+        :rtype: Module
         """
         file_to_parse = open(path_to_file, "r", encoding="utf-8").read()
         tree = ast.parse(file_to_parse)
@@ -326,12 +333,12 @@ class PythonDocGenerator(DocGenerator):
         module.list_entities = self._parse_body(tree)
         return module
 
-    def build_documentation_file(self, path_to_file: Path) -> Module:
-        """Method to overwriting in sub class for concrete ProgramLanguage
-        :param Path path_to_file: file for which build documentation
+    def parse_file(self, path_to_file: Path) -> Module:
+        """Method for parsing python modules
+        :param Path path_to_file: path to current file to parse info from
         :type path_to_file: Path
-        :return: docs
-        :rtype: List[str]
+        :return: parsed module
+        :rtype: Module
         """
         self._logger.debug("Started process file: %s", path_to_file)
 

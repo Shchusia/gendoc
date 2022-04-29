@@ -14,17 +14,47 @@ from gen_doc.models import (
     Module,
 )
 from gen_doc.models.module import Argument, ParsedDocString
-from gen_doc.serializers.serializer import Serializer
+from gen_doc.serializers.serializer import GenDocSerializer
 
 
-class MarkdownSerializer(Serializer):
+class MarkdownSerializer(GenDocSerializer):
     """
     Module convert parsed to pretty markdown format
     """
 
+    short_name = "md"
     suffix_file = ".MD"
 
-    def serialize(self, module: Module) -> List[str]:
+    def serialize_general_info(self) -> List[str]:
+        """
+        Serialize general info
+        :return:
+        """
+        list_serialized_general_info = list()  # type: List[str]
+        if self._general_info.title:
+            title = f"`{self._general_info.title}` "
+            if self._general_info.release:
+                title += f"`{self._general_info.release}`"
+            if self._general_info.repository_main_url:
+                title = f"[{title}]({self._general_info.repository_main_url})"
+            list_serialized_general_info.append(f"# <u> {title} </u>")
+        if self._general_info.description:
+            list_serialized_general_info.append(
+                f"""```text
+{self._general_info.description}
+```"""
+            )
+        if self._general_info.author:
+            list_serialized_general_info.append(
+                f"### Author: {self._general_info.author}"
+            )
+        if self._general_info.author_contacts:
+            list_serialized_general_info.append("### Contacts author:")
+            for contact in self._general_info.author_contacts:
+                list_serialized_general_info.append(f"+ {contact}")
+        return list_serialized_general_info
+
+    def serialize_module(self, module: Module, *args, **kwargs) -> List[str]:
         return self.module_to_markdown_string(module)
 
     def module_to_markdown_string(self, module: Module) -> List[str]:
@@ -50,12 +80,13 @@ class MarkdownSerializer(Serializer):
         self._logger.debug("Started convert module base data")
         module_data_markdown = list()  # type:List[str]
         module_data_markdown.append(f"# Module `{module.path_to_file.name}`")
-        module_data_markdown.append(
-            f"""```text
+        if module.module_doc_string:
+            module_data_markdown.append(
+                f"""```text
 {module.module_doc_string}
 ```
 """
-        )
+            )
         module_data_markdown.append(f"> Path: `{module.path_to_file}`")
         self._logger.debug("Finished convert module base data")
         return module_data_markdown
@@ -116,6 +147,10 @@ class MarkdownSerializer(Serializer):
             class_markdown.append("### Basses(s)")
             for base in entity_class.class_bases:
                 class_markdown.append(f"+ {self.convert_entity(base)}")
+        if entity_class.class_keywords:
+            class_markdown.append("### Keywords(s)")
+            for keyword in entity_class.class_keywords:
+                class_markdown.append(f"+ {self.convert_assign(keyword)[0]}")
         if entity_class.class_entities:
             class_markdown.append("### SubElement(s)")
             for ent in entity_class.class_entities:

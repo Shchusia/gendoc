@@ -1,5 +1,5 @@
 """
-Module with python sphinx doc_string
+Module with python Sphinx docstrings parser
 """
 import re
 from typing import Dict, Optional, Tuple
@@ -39,10 +39,9 @@ def strip_rows(doc_string: str):
 
 
 def parse_docstring(doc_string: Optional[str] = None) -> Optional[ParsedDocString]:
-    """
-    Function parse doc string to standard object
+    """Function to parse doc string to a standard object
     ! sphinx doc string style
-    :param doc_string:
+    :param doc_string: received function doc string
     :type doc_string: str
     :return: parsed object
     :rtype:Optional[ParsedDocString]
@@ -117,7 +116,7 @@ def parse_docstring(doc_string: Optional[str] = None) -> Optional[ParsedDocStrin
 
 
 if __name__ == "__main__":
-    doc_str = """Exapmle doc
+    doc_str = """Example doc
             long string
         :param val1: value with
          long description

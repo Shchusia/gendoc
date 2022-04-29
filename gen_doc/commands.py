@@ -3,17 +3,20 @@ commands to build documentation
 """
 import click
 
-from gen_doc.settings import AllowedSaveModes
+from gen_doc.doc_generator import DocGenerator
+from gen_doc.extensions import GenDocParsers
+from gen_doc.serializers import GenDocSerializers
 from gen_doc.utils.config_handler import copy_config, load_config
-from gen_doc.utils.utils import get_extensions
 
 
-@click.group()
+@click.group(help="Utility for generating project documentation from docstrings")
 def entry_point():
     pass
 
 
-@entry_point.command("init", help="To init config file for generating documentation.")
+@entry_point.command(
+    "init", help="To init config file in order to generate documentation."
+)
 @click.option(
     "-f",
     "--file-config",
@@ -31,7 +34,7 @@ def entry_point():
     is_flag=True,
     required=False,
     default=False,
-    help="for overwriting if file exist",
+    help="To overwrite, in case file already exists",
     type=bool,
 )
 def init(file_config: str, overwrite: bool):
@@ -47,7 +50,7 @@ def init(file_config: str, overwrite: bool):
     "language",
     required=False,
     default="py",
-    type=click.Choice(list(get_extensions().keys())),
+    type=click.Choice([i.name for i in GenDocParsers]),
 )
 @click.option(
     "-sm",
@@ -56,7 +59,7 @@ def init(file_config: str, overwrite: bool):
     required=False,
     default="md",
     help="Save mode",
-    type=click.Choice([i.name for i in AllowedSaveModes]),
+    type=click.Choice([i.name for i in GenDocSerializers]),
 )
 @click.option(
     "-hi",
@@ -65,7 +68,7 @@ def init(file_config: str, overwrite: bool):
     is_flag=True,
     required=False,
     default=True,
-    help="Extract with same hierarchy",
+    help="Extract with the same hierarchy",
     type=bool,
 )
 @click.option(
@@ -75,7 +78,7 @@ def init(file_config: str, overwrite: bool):
     is_flag=True,
     required=False,
     default=True,
-    help="For overwriting if file exist",
+    help="To overwrite, in case file already exists",
     type=bool,
 )
 @click.option(
@@ -93,7 +96,7 @@ def init(file_config: str, overwrite: bool):
     "path_to_save",
     required=False,
     default=None,
-    help="Path to the directory where to save docs",
+    help="Path to the directory where the documentation should be saved",
     type=str,
 )
 @click.option(
@@ -102,7 +105,7 @@ def init(file_config: str, overwrite: bool):
     "file_to_save",
     required=False,
     default=None,
-    help="Path to the directory where to save docs",
+    help="Path to the directory where the documentation should be saved",
     type=str,
 )
 @click.option(
@@ -112,7 +115,7 @@ def init(file_config: str, overwrite: bool):
     is_flag=True,
     required=False,
     default=False,
-    help="Config file name",
+    help="Use config for build documentation.",
     type=bool,
 )
 @click.option(
@@ -136,34 +139,32 @@ def build(
     file_to_save,
     file_config,
 ):
-    extensions = get_extensions()
     if config:
         configs = load_config(file_config)
         if configs is None:
-            print(
-                "Not exist config file for build. Use `gen_doc init` for init config."
-            )
+            print("No config file to build. Use `gen_doc init` to initiate the config.")
             return
         elif not configs:
-            print("Specified incorrect or broken file")
+            print("Specified incorrectly or broken file")
             return
         options = configs.get("OPTIONS", dict())
         author = configs.get("AUTHOR", dict())
         project = configs.get("PROJECT", dict())
-
+        allowed_parsers = [parser.name for parser in GenDocParsers]
         if "language" not in options:
             print(
-                "Please don't drop required fields from config. "
-                "Add field `language` to config and try again."
+                "Please don't drop required fields from the config."
+                "Add `language` field to the config and try again."
             )
             return
-        if options["language"] not in extensions:
+        if options["language"] not in allowed_parsers:
             print(
-                f"You specified an unavailable value for languages. "
-                f"Available values {list(extensions.keys())}"
+                f"You specified unavailable value for languages."
+                f"Available values are: {allowed_parsers}"
             )
-
-        parser = extensions[options["language"]](
+            return
+        parser = DocGenerator(
+            parse_mode=options["language"],
             path_to_root_folder=options.get("path_to_root_folder", None),
             extract_with_same_hierarchy=options.get(
                 "extract_with_same_hierarchy", True
@@ -177,13 +178,15 @@ def build(
                 "additional_folders_to_ignore", None
             ),
             title=project.get("title"),
+            description=project.get("description"),
             repository_main_url=project.get("repository"),
             release=project.get("release"),
             author=author.get("author"),
             author_contacts=author.get("author_contacts"),
         )
     else:
-        parser = extensions[language](
+        parser = DocGenerator(
+            parse_mode=language,
             path_to_root_folder=path_to_root,
             extract_with_same_hierarchy=hierarchically,
             overwrite_if_file_exists=overwrite,
@@ -191,7 +194,7 @@ def build(
             file_to_save=file_to_save,
             save_mode=save_mode,
         )
-    parser.build_documentation()
+    parser.generate()
 
 
 if __name__ == "__main__":
