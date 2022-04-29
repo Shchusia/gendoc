@@ -47,7 +47,7 @@ def get_packages():
 setup(
     name=LIB_NAME,
     version=get_version(),
-    description="Module for build documentation",
+    description="Library to generate documentation",
     author="Denis Shchutkiy",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
