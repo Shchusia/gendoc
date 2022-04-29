@@ -34,7 +34,7 @@ def entry_point():
     is_flag=True,
     required=False,
     default=False,
-    help="For overwriting if the file exists",
+    help="To overwrite, in case file already exists",
     type=bool,
 )
 def init(file_config: str, overwrite: bool):
@@ -78,7 +78,7 @@ def init(file_config: str, overwrite: bool):
     is_flag=True,
     required=False,
     default=True,
-    help="For overwriting if the file exists",
+    help="To overwrite, in case file already exists",
     type=bool,
 )
 @click.option(

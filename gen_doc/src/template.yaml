@@ -1,14 +1,14 @@
 PROJECT:
-  # Your project name
+  # Project name
   title: ""
-  # Description project
+  # Project description
   description: ""
-  # Url path to repository
+  # Repository URL
   repository: ""
-  # What version of the project
+  # Project version
   release: "0.0.1"
 AUTHOR:
-  # Full info about author
+  # Author full info
   author: ""
   # How to contact the author
   # List of str:
@@ -18,24 +18,24 @@ AUTHOR:
   #   - "etc"
   author_contacts: []
 OPTIONS:
-  # Allowed languages [py]
+  # Available languages [py]
   language: "py"
-  # If not specified, it will be saved to where the command was called from
+  # If not specified, the documentation will be saved where the command was called from
   path_to_root_folder: ""
   extract_with_same_hierarchy: True
   overwrite_if_file_exists: False
-  # If not specified, it will be saved to where the command was called from
+  # If not specified, the documentation will be saved where the command was called from
   path_to_save: ""
-  # The name of the file in which to save the documentation
+  # File name to save the documentation
   # Used if argument: `extract_with_same_hierarchy: False`
   file_to_save: ""
   # Allowed mods [md]
   save_mode: "md"
-  # Folder names which will be ignored when generating documentation
-  # Attention! Every file with the given name will be ignored
+  # Folder names which will be ignored during the documentation generation
+  # Attention! Each file with the given name will be ignored
   additional_files_to_ignore: []
-  # Folder names to ignore when creating documentation
-  # Attention! Every folder with the given name will be ignored
-  # If there are folders with the same names, but something does not need to be documented,
-  # it is better to indicate the full path from root(root project)
+  # Folder names to ignore during documentation generation
+  # Attention! Each folder with the given name will be ignored
+  # In case there are folders with the same names but something shouldn't be documented,
+  # you better indicate the full path from the root project
   additional_folders_to_ignore: []
