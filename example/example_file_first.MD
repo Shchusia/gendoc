@@ -113,6 +113,8 @@ ExampleClass
 
 ### Basses(s)
 + ABC
+### Keywords(s)
++ `metaclass` = First
 ### SubElement(s)
  > `_value`: str = "example"
  > `_value_2` = 2
@@ -123,8 +125,6 @@ ExampleClass
  > 
  > ### Decorator(s)
  > + property
- > ### Argument(s)
- > + `self` - empty doc string
  > #### Declared returns: `None`
  > ## Function  `value`
  > ```text
@@ -134,7 +134,6 @@ ExampleClass
  > ### Decorator(s)
  > + value.setter
  > ### Argument(s)
- > + `self` - empty doc string
  > + `value` - empty doc string
  > #### Declared returns: `None`
  > ## Function  `test_func`
@@ -144,8 +143,6 @@ ExampleClass
  > 
  > ### Decorator(s)
  > + abstractmethod
- > ### Argument(s)
- > + `self` - empty doc string
  > #### Declared returns: `None`
  > ## Function  `test_static`
  > ```text
@@ -165,6 +162,5 @@ ExampleClass
  > ```
  > 
  > ### Argument(s)
- > + `self` - empty doc string
  > + `arg`: int - empty doc string
  > #### Declared returns: `int`

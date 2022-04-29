@@ -1,5 +1,5 @@
 """
-General info of repository
+General info of the repository
 """
 from typing import List, Optional
 
@@ -8,7 +8,7 @@ from pydantic import BaseModel, Field
 
 class GeneralInfo(BaseModel):
     """
-    Model for general information about the repository
+    Model with general information about the repository
     """
 
     title: Optional[str] = Field(None, description="Title project")

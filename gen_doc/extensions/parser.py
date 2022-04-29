@@ -1,5 +1,5 @@
 """
-
+Module with base file parser
 """
 import os
 from abc import ABC, abstractmethod
@@ -47,8 +47,7 @@ class GenDocParser(ABC):
 
     @property
     def language(self) -> str:
-        """
-        Property for which language
+        """Property for which language
         :return: str language
         :rtype: str
         :example:
@@ -58,8 +57,7 @@ class GenDocParser(ABC):
 
     @property
     def short_name(self) -> str:
-        """
-        Property for short name in commands
+        """Property for short name in commands
         :return: str short name
         :rtype: str
         :example:
@@ -69,8 +67,7 @@ class GenDocParser(ABC):
 
     @property
     def types_of_file_to_process(self) -> List[str]:
-        """
-        Property for concrete language
+        """Property for concrete language
         type of documents for which to create documentation
         :return: is list of string types to build docs
         :rtype: List[str]
@@ -81,8 +78,7 @@ class GenDocParser(ABC):
 
     @property
     def files_to_ignore(self):
-        """
-        Which files names will not be considered
+        """Which files names will not be considered
         :return: list of files that should not be processed
         :rtype: List[str]
         :example:
@@ -105,8 +101,8 @@ class GenDocParser(ABC):
         raise NotImplementedError
 
     def parse(self) -> List[Module]:
-        """
-        Method parses all nested files and folders if they are not in the exclusion
+        """Method parses all nested files and folders if
+         they are not in the exclusion
         :return: list of parsed modules
         """
         self._logger.debug("Started process root folder: %s", self._root_folder)
@@ -152,12 +148,14 @@ class GenDocParser(ABC):
     def _is_correct_folder_to_process(
         folder: str, folders_to_ignore: List[str]
     ) -> bool:
-        """
-        method checks whether the specified directory
+        """Method to check if the specified directory
          should be processed
-        :param str folder: current folder to process
-        :param List[str] folders_to_ignore: folders in exclusion
-        :return: true if need to process
+        :param folder: current folder to process
+        :type folder: str
+        :param folders_to_ignore: folders in exclusion
+        :type folders_to_ignore: List[str]
+        :return: true if folder needs to be processed
+        :rtype: bool
         """
         for ig_folder in folders_to_ignore:
             if ig_folder == folder[: len(ig_folder)]:

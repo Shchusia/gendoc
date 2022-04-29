@@ -1,5 +1,5 @@
 """
-Main module with class for working with catalog
+Main module with the class that works with the catalog
 """
 # pylint: disable=too-many-arguments
 from collections import Iterable
@@ -39,28 +39,27 @@ class DocGenerator:
         additional_files_to_ignore: Optional[List[str]] = None,
         additional_folders_to_ignore: Optional[List[str]] = None,
     ):
-        """
-        Init config loader
-        :param logger:
-        :param path_to_root_folder: path to the directory for which
+        """Init config loader
+        :param logger: Logger
+        :param path_to_root_folder: Path to the directory for which the
          documentation should be compiled
-        :param extract_with_same_hierarchy: if False extract all to one file
-         if True create file for every file'
-        :param overwrite_if_file_exists: for overwriting if file exist
-        :param path_to_save: path to the directory where to save docs
+        :param extract_with_same_hierarchy: If False extract all into one file
+         if True create file for each file'
+        :param overwrite_if_file_exists: To overwrite if the file exists
+        :param path_to_save: Path to the directory where the documentation
+         should be saved
         :param file_to_save: name_file to save
-        :param parse_mode: parse_mode
-        :param save_mode: save mode
-        :param title: title for header
-        :param repository_main_url: url of the repository where this project
+        :param save_mode: Save mode
+        :param title: Title for the header
+        :param repository_main_url: URL of the repository where this project
          is located
-        :param author: author of the documented project
-        :param author_contacts: contacts author
-        :param release: release project
-        :param additional_files_to_ignore: additional files that should not
+        :param author: Author of the documented project
+        :param author_contacts: Author contacts
+        :param release: Release project
+        :param additional_files_to_ignore: Additional files that should not
          be included in the documentation
-        :param additional_folders_to_ignore: additional directories not
-         included in documentation
+        :param additional_folders_to_ignore: Additional directories that should
+         not be included in the documentation
         """
 
         self._logger = logger or getLogger(__name__)
@@ -125,9 +124,9 @@ class DocGenerator:
 
         self._logger.debug("Path to folder: %s", self._root_folder)
 
-    def generate(self):
-        """
-        Function to run process generate documentation
+    def generate(self) -> None:
+        """Function to run process generate documentation
+        :return: nothing
         """
         parser = GenDocParsers[self._parse_mode].value(
             logger=self._logger,

@@ -117,6 +117,10 @@ class MarkdownSerializer(GenDocSerializer):
             class_markdown.append("### Basses(s)")
             for base in entity_class.class_bases:
                 class_markdown.append(f"+ {self.convert_entity(base)}")
+        if entity_class.class_keywords:
+            class_markdown.append("### Keywords(s)")
+            for keyword in entity_class.class_keywords:
+                class_markdown.append(f"+ {self.convert_assign(keyword)[0]}")
         if entity_class.class_entities:
             class_markdown.append("### SubElement(s)")
             for ent in entity_class.class_entities:

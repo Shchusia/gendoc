@@ -1,3 +1,6 @@
+"""
+ Module with base class for the serializers
+"""
 import os
 from abc import ABC, abstractmethod
 from distutils.util import strtobool
@@ -10,6 +13,10 @@ from gen_doc.settings import DEFAULT_SUFFIX
 
 
 class GenDocSerializer(ABC):
+    """
+    Base class for the serializers
+    """
+
     def __init__(
         self,
         path_to_save: Optional[Path],
@@ -40,16 +47,15 @@ class GenDocSerializer(ABC):
 
     @property
     def suffix_file(self) -> str:
-        """
-        File type for which this serializer is intended
+        """File type for which this serializer is intended
         :return: ".type"
+        :rtype: str
         """
         raise NotImplementedError
 
     @property
     def short_name(self) -> str:
-        """
-        Property for short name in commands
+        """Property for short name in commands
         :return: str short name
         :rtype: str
         :example:
@@ -58,10 +64,24 @@ class GenDocSerializer(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def serialize_module(self, module: Module, *args, **kwargs):
+    def serialize_module(self, module: Module, *args, **kwargs) -> List[str]:
+        """Main method for serialize module
+        method to implement in child classes
+        :param module: object of module
+        :type module: Module
+        :param args: Optional arguments
+        :param kwargs: Optional keyword arguments
+        :return: serialized module to list of string
+        :rtype: List[str]
+        """
         raise NotImplementedError
 
-    def serialize(self, modules: List[Module]):
+    def serialize(self, modules: List[Module]) -> None:
+        """Serialize parsed modules
+        :param modules: list parsed modules
+        :type modules: List[Module]
+        :return: notjing
+        """
         if self._extract_with_same_hierarchy:
             for module in modules:
                 relative_path_to_module = str(module.path_to_file.absolute())[
@@ -88,10 +108,12 @@ class GenDocSerializer(ABC):
     def _save_documentation_file(
         self, path_to_save: Path, data_to_save: List[str]
     ) -> None:
-        """
-        Method save data to file
+        """Method to save data to a file
         :param Path path_to_save: path to file
+        :type path_to_save: Path
         :param List[str] data_to_save: data to save
+        :type data_to_save: List[str]
+        :return: nothing
         """
 
         if not data_to_save:
