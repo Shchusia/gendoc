@@ -1,9 +1,9 @@
 """
 Settings for work lib
 """
-# pylint: disable=invalid-name
 import logging
 
-logging.basicConfig(encoding="utf-8", level=logging.INFO)  # type: ignore # noqa
+logging.basicConfig(level=logging.INFO)  # noqa
 
 DEFAULT_SUFFIX = "_doc"
+NAME_FILE_GENERAL_INFO = "GENERAL_INFO"

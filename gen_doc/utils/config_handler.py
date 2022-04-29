@@ -1,3 +1,6 @@
+"""
+Module with functions work with  config
+"""
 import logging
 from pathlib import Path
 from shutil import copyfile
@@ -7,10 +10,11 @@ import yaml  # type: ignore  # noqa
 
 
 def normalize_name_config(file_name_to_save: str) -> Path:
-    """
-    Help function for normalizing and convert file name
+    """Help function to normalize and rename the file
     :param str file_name_to_save: name file
+    :type file_name_to_save: str
     :return: path to file
+    :rtype: Path
     """
     path_to_save = Path(file_name_to_save)
     if path_to_save.suffix != ".yaml":
@@ -19,10 +23,11 @@ def normalize_name_config(file_name_to_save: str) -> Path:
 
 
 def load_config(file_name_to_save: str) -> Optional[Dict[str, Any]]:
-    """
-    method parse config file
-    :param str file_name_to_save:
+    """Method to parse the config file
+    :param file_name_to_save: path to file config
+    :type file_name_to_save: str
     :return: config if exists
+    :rtype: Optional[Dict[str, Any]]
     """
     path_to_config_file = normalize_name_config(file_name_to_save)
     if not path_to_config_file.is_file():
@@ -37,11 +42,13 @@ def load_config(file_name_to_save: str) -> Optional[Dict[str, Any]]:
 
 
 def copy_config(file_name_to_save: str, overwrite: bool) -> bool:
-    """
-    Method to copy config template
-    :param str file_name_to_save: name config
-    :param bool overwrite: is overwriting config if exist
+    """Method to copy config template
+    :param file_name_to_save: name config
+    :type file_name_to_save: str
+    :param overwrite: is overwriting config if exist
+    :type overwrite: bool
     :return: is correct
+    :rtype: bool
     """
     config_path = (
         Path(__file__).absolute().parent.parent / Path("src") / Path("template.yaml")

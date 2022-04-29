@@ -9,12 +9,14 @@ from gen_doc.serializers import GenDocSerializers
 from gen_doc.utils.config_handler import copy_config, load_config
 
 
-@click.group()
+@click.group(help="Utility for generating project documentation from docstrings")
 def entry_point():
     pass
 
 
-@entry_point.command("init", help="To init config file for generating documentation.")
+@entry_point.command(
+    "init", help="To init config file in order to generate documentation."
+)
 @click.option(
     "-f",
     "--file-config",
@@ -32,7 +34,7 @@ def entry_point():
     is_flag=True,
     required=False,
     default=False,
-    help="for overwriting if file exist",
+    help="For overwriting if the file exists",
     type=bool,
 )
 def init(file_config: str, overwrite: bool):
@@ -66,7 +68,7 @@ def init(file_config: str, overwrite: bool):
     is_flag=True,
     required=False,
     default=True,
-    help="Extract with same hierarchy",
+    help="Extract with the same hierarchy",
     type=bool,
 )
 @click.option(
@@ -76,7 +78,7 @@ def init(file_config: str, overwrite: bool):
     is_flag=True,
     required=False,
     default=True,
-    help="For overwriting if file exist",
+    help="For overwriting if the file exists",
     type=bool,
 )
 @click.option(
@@ -94,7 +96,7 @@ def init(file_config: str, overwrite: bool):
     "path_to_save",
     required=False,
     default=None,
-    help="Path to the directory where to save docs",
+    help="Path to the directory where the documentation should be saved",
     type=str,
 )
 @click.option(
@@ -103,7 +105,7 @@ def init(file_config: str, overwrite: bool):
     "file_to_save",
     required=False,
     default=None,
-    help="Path to the directory where to save docs",
+    help="Path to the directory where the documentation should be saved",
     type=str,
 )
 @click.option(
@@ -113,7 +115,7 @@ def init(file_config: str, overwrite: bool):
     is_flag=True,
     required=False,
     default=False,
-    help="Use config for setup documentation.",
+    help="Use config for build documentation.",
     type=bool,
 )
 @click.option(
@@ -140,12 +142,10 @@ def build(
     if config:
         configs = load_config(file_config)
         if configs is None:
-            print(
-                "Not exist config file for build. Use `gen_doc init` for init config."
-            )
+            print("No config file to build. Use `gen_doc init` to initiate the config.")
             return
         elif not configs:
-            print("Specified incorrect or broken file")
+            print("Specified incorrectly or broken file")
             return
         options = configs.get("OPTIONS", dict())
         author = configs.get("AUTHOR", dict())
@@ -153,17 +153,18 @@ def build(
         allowed_parsers = [parser.name for parser in GenDocParsers]
         if "language" not in options:
             print(
-                "Please don't drop required fields from config. "
-                "Add field `language` to config and try again."
+                "Please don't drop required fields from the config."
+                "Add `language` field to the config and try again."
             )
             return
         if options["language"] not in allowed_parsers:
             print(
-                f"You specified an unavailable value for languages. "
-                f"Available values {allowed_parsers}"
+                f"You specified unavailable value for languages."
+                f"Available values are: {allowed_parsers}"
             )
             return
         parser = DocGenerator(
+            parse_mode=options["language"],
             path_to_root_folder=options.get("path_to_root_folder", None),
             extract_with_same_hierarchy=options.get(
                 "extract_with_same_hierarchy", True
@@ -177,6 +178,7 @@ def build(
                 "additional_folders_to_ignore", None
             ),
             title=project.get("title"),
+            description=project.get("description"),
             repository_main_url=project.get("repository"),
             release=project.get("release"),
             author=author.get("author"),
@@ -184,6 +186,7 @@ def build(
         )
     else:
         parser = DocGenerator(
+            parse_mode=language,
             path_to_root_folder=path_to_root,
             extract_with_same_hierarchy=hierarchically,
             overwrite_if_file_exists=overwrite,

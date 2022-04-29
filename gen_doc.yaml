@@ -1,34 +1,36 @@
 PROJECT:
   # Your project name
-  title: ""
+  title: "gen_doc"
   # Description project
-  description: ""
+  description: "Library for generating documentation"
   # Url path to repository
-  repository: ""
+  repository: "https://github.com/Shchusia/gendoc"
   # What version of the project
-  release: "0.0.1"
+  release: "0.1.2"
 AUTHOR:
   # Full info about author
-  author: ""
+  author: "Denis Shchutskyi"
   # How to contact the author
   # List of str:
-  # Author_contacts:
+  # author_contacts:
   #   - "email: email@example.com"
   #   - "telegram: @TelegramNick"
   #   - "etc"
-  author_contacts: []
+  author_contacts:
+    - "email: denisshchutskyi@gmail.com"
+    - "telegram: [DenisShchutskyi](https://t.me/DenisShchutskyi)"
 OPTIONS:
   # Allowed languages [py]
   language: "py"
   # If not specified, it will be saved to where the command was called from
-  path_to_root_folder: ""
+  path_to_root_folder: "./gen_doc"
   extract_with_same_hierarchy: True
-  overwrite_if_file_exists: False
+  overwrite_if_file_exists: True
   # If not specified, it will be saved to where the command was called from
-  path_to_save: ""
+  path_to_save: "./docs"
   # The name of the file in which to save the documentation
   # Used if argument: `extract_with_same_hierarchy: False`
-  file_to_save: ""
+  file_to_save: "gen_doc"
   # Allowed mods [md]
   save_mode: "md"
   # Folder names which will be ignored when generating documentation

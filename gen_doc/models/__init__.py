@@ -12,6 +12,5 @@ from .module import (
     Module,
     Parameter,
     ParsedDocString,
-    Variable,
 )
 from .variables import EnumTypeVariables, Operations
