@@ -178,6 +178,7 @@ def build(
                 "additional_folders_to_ignore", None
             ),
             title=project.get("title"),
+            description=project.get("description"),
             repository_main_url=project.get("repository"),
             release=project.get("release"),
             author=author.get("author"),

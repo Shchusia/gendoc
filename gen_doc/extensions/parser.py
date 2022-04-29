@@ -158,6 +158,6 @@ class GenDocParser(ABC):
         :rtype: bool
         """
         for ig_folder in folders_to_ignore:
-            if ig_folder == folder[: len(ig_folder)]:
+            if ig_folder == folder[-len(ig_folder) :]:
                 return False
         return True

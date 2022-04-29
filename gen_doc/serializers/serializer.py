@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import List, Optional, Union
 
 from gen_doc.models import GeneralInfo, Module
-from gen_doc.settings import DEFAULT_SUFFIX
+from gen_doc.settings import DEFAULT_SUFFIX, NAME_FILE_GENERAL_INFO
 
 
 class GenDocSerializer(ABC):
@@ -76,13 +76,30 @@ class GenDocSerializer(ABC):
         """
         raise NotImplementedError
 
+    @abstractmethod
+    def serialize_general_info(self) -> List[str]:
+        """Method serialize general info
+        :return:
+        """
+        raise NotImplementedError
+
     def serialize(self, modules: List[Module]) -> None:
         """Serialize parsed modules
         :param modules: list parsed modules
         :type modules: List[Module]
-        :return: notjing
+        :return: nothing
         """
+        serialized_general = self.serialize_general_info()
         if self._extract_with_same_hierarchy:
+            try:
+                name_file = Path(NAME_FILE_GENERAL_INFO + self.suffix_file)
+                self._save_documentation_file(
+                    self._path_to_save / name_file, serialized_general
+                )
+            except Exception as exc:
+                self._logger.warning(
+                    "Don't save general info. Error: %s", str(exc), exc_info=True
+                )
             for module in modules:
                 relative_path_to_module = str(module.path_to_file.absolute())[
                     len(str(self._root_folder.absolute())) :
@@ -101,8 +118,9 @@ class GenDocSerializer(ABC):
             one_documentation = [
                 row for module in modules for row in self.serialize_module(module)
             ]
+            serialized_general.extend(one_documentation)
             self._save_documentation_file(
-                self._path_to_save / self._file_to_save, one_documentation
+                self._path_to_save / self._file_to_save, serialized_general
             )
 
     def _save_documentation_file(

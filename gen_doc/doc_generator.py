@@ -32,6 +32,7 @@ class DocGenerator:
         save_mode: Optional[str] = "md",
         parse_mode: Optional[str] = "py",
         title: Optional[str] = None,
+        description: Optional[str] = None,
         repository_main_url: Optional[str] = None,
         author: Optional[str] = None,
         author_contacts: Optional[List[str]] = None,
@@ -52,6 +53,7 @@ class DocGenerator:
         :param save_mode: Save mode
         :param parse_mode:
         :param title: Title for the header
+        :param description: Description project
         :param repository_main_url: URL of the repository where this project
          is located
         :param author: Author of the documented project
@@ -95,6 +97,7 @@ class DocGenerator:
         self._overwrite_if_file_exists = strtobool(str(overwrite_if_file_exists))
         self.general_info = GeneralInfo(
             title=title,
+            description=description,
             author=author,
             author_contacts=author_contacts,
             release=release,

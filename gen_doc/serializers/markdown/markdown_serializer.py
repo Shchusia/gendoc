@@ -25,6 +25,35 @@ class MarkdownSerializer(GenDocSerializer):
     short_name = "md"
     suffix_file = ".MD"
 
+    def serialize_general_info(self) -> List[str]:
+        """
+        Serialize general info
+        :return:
+        """
+        list_serialized_general_info = list()  # type: List[str]
+        if self._general_info.title:
+            title = f"`{self._general_info.title}` "
+            if self._general_info.release:
+                title += f"`{self._general_info.release}`"
+            if self._general_info.repository_main_url:
+                title = f"[{title}]({self._general_info.repository_main_url})"
+            list_serialized_general_info.append(f"# <u> {title} </u>")
+        if self._general_info.description:
+            list_serialized_general_info.append(
+                f"""```text
+{self._general_info.description}
+```"""
+            )
+        if self._general_info.author:
+            list_serialized_general_info.append(
+                f"### Author: {self._general_info.author}"
+            )
+        if self._general_info.author_contacts:
+            list_serialized_general_info.append("### Contacts author:")
+            for contact in self._general_info.author_contacts:
+                list_serialized_general_info.append(f"+ {contact}")
+        return list_serialized_general_info
+
     def serialize_module(self, module: Module, *args, **kwargs) -> List[str]:
         return self.module_to_markdown_string(module)
 
