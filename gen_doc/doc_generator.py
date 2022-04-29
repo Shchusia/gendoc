@@ -50,6 +50,7 @@ class DocGenerator:
          should be saved
         :param file_to_save: name_file to save
         :param save_mode: Save mode
+        :param parse_mode:
         :param title: Title for the header
         :param repository_main_url: URL of the repository where this project
          is located
