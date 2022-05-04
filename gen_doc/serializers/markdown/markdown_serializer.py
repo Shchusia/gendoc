@@ -291,7 +291,9 @@ class MarkdownSerializer(GenDocSerializer):
 ```
                     """
             )
-        if entity_function.function_returns:
+        if entity_function.function_returns and self.convert_entity(
+            entity_function.function_returns
+        ):
             function_markdown.append(
                 f"#### Declared returns: "
                 f"`{self.convert_entity(entity_function.function_returns)}`"
