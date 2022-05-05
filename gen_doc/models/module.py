@@ -4,7 +4,7 @@ Models for module
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 from pydantic import BaseModel, Field
 
@@ -61,7 +61,28 @@ class ParsedDocString(BaseModel):
     args: List[Parameter] = Field(None, description="Parsed arguments")
     raises: List[Parameter] = Field(None, description="Parsed raises of function")
     returns: Parameter = Field(None, description="Parsed return values of function")
+    yields: Parameter = Field(None, description="Parsed yield values of function")
+    note: str = Field(None, description="Parsed note")
     example: str = Field(None, description="Parsed example")
+    extra_params: Optional[Dict[str, str]] = Field(None, description="Parsed extra")
+    to_do: Optional[List[str]] = Field(None, description="Parsed arguments")
+    attributes: Optional[List[Parameter]] = Field(None, description="Parsed arguments")
+
+    def _get_numerical_equivalent_of_parsing(self) -> int:
+        _sum = 0
+        properties = self.schema()["properties"]
+        for property in properties:
+            if self.__getattribute__(property):
+                _sum += 1
+        return _sum
+
+    def __lt__(self, other):
+        if not other:
+            return False
+        return (
+            self._get_numerical_equivalent_of_parsing()
+            < other._get_numerical_equivalent_of_parsing()
+        )
 
 
 class Function(EntityOfCode):
@@ -96,4 +117,7 @@ class Class(EntityOfCode):
     class_keywords: List[Assign] = Field(None, description="Class keywords")
     class_entities: List[EntityOfCode] = Field(
         None, description="Sub entities current class"
+    )
+    class_parsed_docstring: Optional[ParsedDocString] = Field(
+        None, description="Docstring object resolved to object"
     )

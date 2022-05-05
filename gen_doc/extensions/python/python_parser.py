@@ -21,7 +21,7 @@ from ...models import (
     Operations,
 )
 from ...models.module import Argument, Arguments
-from .utils.parser_python_sphinx_docstring import parse_docstring
+from .utils import DocStingPyParser
 
 ARGUMENTS_TO_IGNORE = ["self"]
 
@@ -188,6 +188,7 @@ class GenDocPythonParser(GenDocParser):
         clazz.class_bases = self._parse_basses(obj)
         clazz.class_entities = self._parse_body(obj)
         clazz.class_keywords = self._parse_keywords(obj)
+        clazz.class_parsed_docstring = DocStingPyParser.parse(clazz.class_doc_string)
         return clazz
 
     def _parse_decorators(
@@ -242,7 +243,7 @@ class GenDocPythonParser(GenDocParser):
             function_args=self._parse_arguments(obj.args),
             function_entities=self._parse_body(obj, is_inner=True),
             function_type_comment=obj.type_comment,
-            function_parsed_docstring=parse_docstring(ast.get_docstring(obj)),
+            function_parsed_docstring=DocStingPyParser.parse(ast.get_docstring(obj)),
         )
         if isinstance(obj, ast.AsyncFunctionDef):
             _function.function_is_async = True
