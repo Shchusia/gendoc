@@ -9,6 +9,7 @@ pip install gen_doc
 ### What it does?
 + aggregates all `.py` files into one or multiple `.md` files, keeping the same hierarchy
 + collects all classes and methods with their information
++ parses `google` & `sphinx` py docstrings.
 
 ### How to use:
 
