@@ -37,8 +37,7 @@ Class for generating project documentation
  > + `additional_files_to_ignore`: Optional[List[str]] - Additional files that should not
  > be included in the documentation
  > + `additional_folders_to_ignore`: Optional[List[str]] - Additional directories that should
- > not be included in the documentation
- > #### Declared returns: `None`
+ > not be included in the documentation
  > ## Function  `generate`
  > ```text
  > Function to run process generate documentation
@@ -49,4 +48,3 @@ Class for generating project documentation
  > nothing
  > ```
  > 
- > #### Declared returns: `None`

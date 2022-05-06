@@ -53,6 +53,10 @@ Module convert parsed to pretty markdown format
  > 
  > #### Declared returns: `List[str]`
  > ## Function  `convert_entity_of_code`
+ > ```text
+ > Method convert base entity of code to list[str]
+ > ```
+ > 
  > ### Argument(s)
  > + `entity_of_code`: EntityOfCode - entity of code
  > ### Return
@@ -87,6 +91,12 @@ Module convert parsed to pretty markdown format
  > ```
  > 
  > #### Declared returns: `List[str]`
+ > ## Function  `convert_parse_docs`
+ > ### Decorator(s)
+ > + staticmethod
+ > ### Argument(s)
+ > + `parse_docs`: Optional[ParsedDocString] - empty doc string
+ > #### Declared returns: `Dict[str, Any]`
  > ## Function  `convert_function`
  > ```text
  > Method to convert Function
@@ -101,10 +111,6 @@ Module convert parsed to pretty markdown format
  > 
  > #### Declared returns: `List[str]`
  > ### SubElement(s)
- > > ## Function  `convert_parse_docs`
- > > ### Argument(s)
- > > + `parse_docs`: Optional[ParsedDocString] - empty doc string
- > > #### Declared returns: `Dict[str, Any]`
  > > ## Function  `get_arg_str`
  > > ### Argument(s)
  > > + `arg_name`: Argument - empty doc string
@@ -113,8 +119,7 @@ Module convert parsed to pretty markdown format
  > > ## Function  `convert_args`
  > > ### Argument(s)
  > > + `args`: List[Argument] - empty doc string
- > > + `_converted_doc_string` - empty doc string
- > > #### Declared returns: `None`
+ > > + `_converted_doc_string` - empty doc string
  > ## Function  `convert_sub_code`
  > ### Argument(s)
  > + `entity`: EntityOfCode - empty doc string

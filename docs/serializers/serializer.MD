@@ -21,8 +21,7 @@ Base class for the serializers
  > + `extract_with_same_hierarchy`: Optional[bool] - empty doc string
  > + `overwrite_if_file_exists`: Optional[bool] - empty doc string
  > + `file_to_save`: Optional[Union[str, Path]] - empty doc string
- > + `general_info`: Optional[GeneralInfo] - empty doc string
- > #### Declared returns: `None`
+ > + `general_info`: Optional[GeneralInfo] - empty doc string
  > ## Function  `suffix_file`
  > ```text
  > File type for which this serializer is intended
@@ -90,8 +89,7 @@ Base class for the serializers
  > ```text
  > nothing
  > ```
- > 
- > #### Declared returns: `None`
+ > 
  > ## Function  `_save_documentation_file`
  > ```text
  > Method to save data to a file
@@ -99,10 +97,9 @@ Base class for the serializers
  > 
  > ### Argument(s)
  > + `path_to_save`: Path - path to file
- > + `data_to_save`: List[str] - empty doc string
+ > + `data_to_save`: List[str] - data to save
  > ### Return
  > ```text
  > nothing
  > ```
  > 
- > #### Declared returns: `None`
