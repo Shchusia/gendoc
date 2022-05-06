@@ -1,5 +1,5 @@
 """
-
+Module with base class for parsers
 """
 
 from abc import ABC, abstractmethod
@@ -15,6 +15,11 @@ class PythonDocStringParser(ABC):
 
     @property
     def example(self) -> str:
+        """
+        Example of a string with all available and correctly spelled attributes
+        :return: example str
+        :rtype: str
+        """
         raise NotImplementedError
 
     @staticmethod

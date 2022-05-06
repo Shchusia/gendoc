@@ -82,7 +82,7 @@ class GenDocPythonParser(GenDocParser):
         elif isinstance(obj, (ast.FunctionDef, ast.AsyncFunctionDef)):
             return self._parse_function(obj)
         else:
-            self._logger.warn("can't parse %s", obj)
+            self._logger.debug("Can't parse %s", obj)
         return None
 
     def _parse_value(self, obj: ast.expr) -> Entity:
@@ -155,7 +155,7 @@ class GenDocPythonParser(GenDocParser):
             return Entity(e_type=EnumTypeVariables.NAME, e_value=["..."])
 
         else:
-            self._logger.warn("Not processed: %s", obj)
+            self._logger.debug("Not processed: %s", obj)
             return Entity(e_type=EnumTypeVariables.UNPARSE, e_value=[ast.unparse(obj)])
 
     def _parse_assign(self, obj: Union[ast.Assign, ast.AnnAssign]) -> Assign:

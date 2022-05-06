@@ -12,7 +12,9 @@ from .utils import strip_rows
 GENERAL_STOPPERS = r"(?:(?=:param)|(?=:attr)|(?=:return)|(?=:yield)|(?=:note)|(?=:raises)|(?=:type)|(?=:rtype)|(?=:ytype)|(?=:todo)|(?=:example)|(?=\.\. code-block::)|\Z)"  # noqa
 
 DESCRIPTION_REGEX = re.compile(
-    f"(?P<description_method>[\*\w\s]+){GENERAL_STOPPERS}", re.S  # noqa
+    # f"(?P<description_method>[.\*\w\s\d]+){GENERAL_STOPPERS}", re.S  # noqa
+    f"(?P<description_method>.*?){GENERAL_STOPPERS}",
+    re.S,  # noqa
 )
 
 PARAM_REGEX = re.compile(
@@ -50,9 +52,33 @@ EXAMPLE_REGEX_2 = re.compile(
 
 
 class SphinxDocStringPyParser(PythonDocStringParser):
-    """ """
+    """
+    Sphinx doc string parser
+    """
 
     example = """
+    Object doc string
+    with long description
+
+    :param value1: description to value1
+    :type value1: str
+    :param List[str] value2: description to value2
+    long description value2
+    :attr value3: description to value3
+    :type value3: Dict[str, str]
+    :attr List[Tuple[str, str]] value4: description to value3
+    :return: what return function
+    :rtype: type returned value
+    :yield: if yield function
+    :ytype: for yield value
+    :note: note string
+    with some information
+    :todo: todo1
+    :todo: todo2
+    with description
+    :example:
+    >>> import this
+    >>> # and other imports
     """
 
     @staticmethod
@@ -77,8 +103,8 @@ class SphinxDocStringPyParser(PythonDocStringParser):
                     new[tmp[-1]] = doc
                     _types[tmp[-1]] = " ".join(tmp[:-1])
 
-            for td in to_del:
-                del _params[td]
+            for to_delete in to_del:
+                del _params[to_delete]
             _params.update(new)
 
             return _params, _types
@@ -160,37 +186,3 @@ class SphinxDocStringPyParser(PythonDocStringParser):
             to_do=to_dos,
         )
         return parsed_doc_string
-
-
-if __name__ == "__main__":
-    doc_str = """Example doc
-            long string
-        :param val1: value with
-         long description
-         really long
-        :type val1: str
-        :attr val3: value with
-         long description
-         really long
-        :type val3: str
-        :param Dict[str, str] val2: other variable
-        :param Dict[str, str] val2: other variable
-        :attr Dict[str, str] val4: other variable
-        :return: some return text
-        :rtype: str
-        :yield: some yield text
-        :ytype: str
-        :raises RunTimeError: if error in time execution
-        :note: value to note
-        asd asd asddafa
-        asd
-        :todo: some to do
-        :todo: some to do2
-        :example:
-        >>> from pathlib import Path
-        >>> from model import Model
-        >>> MODEL_PATH = Path('model')
-        >>> mdl = Model(model_path=MODEL_PATH)
-        >>> mdl.predict(42)
-        result - 42
-        """

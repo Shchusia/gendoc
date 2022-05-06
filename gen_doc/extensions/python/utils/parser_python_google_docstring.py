@@ -1,5 +1,5 @@
 """
-Module with python Sphinx docstrings parser
+Module with python Google docstrings parser
 """
 import re
 from typing import List, Optional, Tuple
@@ -55,51 +55,38 @@ PARSE_PARAM_TYPE = re.compile(
 
 
 class GoogleDocStringPyParser(PythonDocStringParser):
-    """ """
+    """
+    Google doc string parser
+    """
 
     example = """
-    Fetches rows from a Smalltable.
+    Example google doc string
 
-    Retrieves rows pertaining to the given keys from the Table instance
-    represented by table_handle.  String keys will be UTF-8 encoded.
+    Description of function
 
     Args:
-        table_handle (int): An open smalltable.Table instance.
-        keys (Dict[str, str]): A sequence of strings representing the key of each table
-          row to fetch.  String keys will be UTF-8 encoded.
-        require_all_keys: If True only rows with values set for all keys will be
-          returned.
+        value1 (int): description to value1
+        value2 (Dict[str, str]): description to value2
+          long description value2
+        value3: description value3
     Attributes:
-        module_level_variable (int): Module level variables may be documented in
-            either the ``Attributes`` section of the module docstring, or in an
-            inline docstring immediately following the variable.
-            Either form is acceptable, but the two should not be mixed. Choose
-            one convention to document module level variables and be consistent
-            with it.
+        value4 (int): description to value4
+        value5: description to value5
     Raises:
         AttributeError: The ``Raises`` section is a list of all exceptions
             that are relevant to the interface.
-        ValueError: If `param2` is equal to `param1`.
     Returns:
-        A dict mapping keys to the corresponding table row data
-        fetched. Each row is represented as a tuple of strings. For
-
-        {b'Serak': ('Rigel VII', 'Preparer'),
-         b'Zim': ('Irk', 'Invader'),
-         b'Lrrr': ('Omicron Persei 8', 'Emperor')}
-
-        Returned keys are always bytes.  If a key from the keys argument is
-        missing from the dictionary, then that row was not found in the
-        table (and require_all_keys must have been False).
+        type_returned_value: a description of return
     Todo:
         * For module TODOs
-        * You have to also use ``sphinx.ext.todo`` extension
-    .. _Google Python Style Guide:
+        * ToDo
+          long
+    .. _Google Python Style Guide optional parameters:
         http://google.github.io/styleguide/pyguide.html
     .. _PEP 484:
         https://www.python.org/dev/peps/pep-0484/
     Yields:
-        int: The next number in the range of 0 to `n` - 1.
+        int: yield value with tupe
     Note:
         Do not include the `self` parameter in the ``Args`` section.
     Example:
@@ -107,9 +94,7 @@ class GoogleDocStringPyParser(PythonDocStringParser):
         to use the function.
         >>> print([i for i in example_generator(4)])
         [0, 1, 2, 3]
-
-
-"""
+    """
 
     @staticmethod
     def parse(doc_string: Optional[str]) -> Optional[ParsedDocString]:
@@ -173,8 +158,8 @@ class GoogleDocStringPyParser(PythonDocStringParser):
         if raises:
             raises_str = raises.group("raises_doc")
             tmp_raise = parse_attributes_args(raises_str)
-            for x in tmp_raise:
-                x.param_type = x.param_name
+            for val in tmp_raise:
+                val.param_type = val.param_name
             parsed_doc_string.raises = tmp_raise
         returns = RETURNS_REGEX.search(doc_string)
         if returns:

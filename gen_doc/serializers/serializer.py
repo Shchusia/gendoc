@@ -135,7 +135,7 @@ class GenDocSerializer(ABC):
         """
 
         if not data_to_save:
-            self._logger.warning("Not data to save.")
+            self._logger.warning("Not data to save for file: %s.", str(path_to_save))
             return
         if os.path.isfile(path_to_save):
             if not self._overwrite_if_file_exists:
