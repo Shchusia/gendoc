@@ -17,8 +17,7 @@ Base class for parsers
  > + `logger`: Optional[Logger] - empty doc string
  > + `path_to_root_folder`: Optional[Union[Path, str]] - empty doc string
  > + `additional_files_to_ignore`: Optional[List[str]] - empty doc string
- > + `additional_folders_to_ignore`: Optional[List[str]] - empty doc string
- > #### Declared returns: `None`
+ > + `additional_folders_to_ignore`: Optional[List[str]] - empty doc string
  > ## Function  `language`
  > ```text
  > Property for which language
@@ -83,7 +82,7 @@ Base class for parsers
  > list of files that should not be processed
  > ```
  > 
- > #### Declared returns: `None`
+ > #### Declared returns: `List[str]`
  > ### Example
  > ```python
  > >>> files_to_ignore = ['setup.py'] # for python
@@ -100,7 +99,7 @@ Base class for parsers
  > list of folders that should not be processed
  > ```
  > 
- > #### Declared returns: `None`
+ > #### Declared returns: `List[str]`
  > ### Example
  > ```python
  > >>> folders_to_ignore = ['__pycache__'] # for python
@@ -109,8 +108,7 @@ Base class for parsers
  > ### Decorator(s)
  > + abstractmethod
  > ### Argument(s)
- > + `path_to_file`: Path - empty doc string
- > #### Declared returns: `None`
+ > + `path_to_file`: Path - empty doc string
  > ## Function  `parse`
  > ```text
  > Method parses all nested files and folders if

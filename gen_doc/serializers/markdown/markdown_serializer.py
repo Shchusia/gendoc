@@ -130,9 +130,20 @@ class MarkdownSerializer(GenDocSerializer):
         :return: serialized class
         """
         class_markdown = list()  # type: List[str]
+        converted_doc_string = self.convert_parse_docs(
+            entity_class.class_parsed_docstring
+        )
 
         class_markdown.append(f"## Class `{entity_class.class_name}`")
-        if entity_class.class_doc_string:
+        if converted_doc_string.get("description"):
+            class_markdown.append(
+                f"""```text
+{converted_doc_string.get("description")}
+```
+"""
+            )
+
+        elif entity_class.class_doc_string:
             class_markdown.append(
                 f"""```text
 {entity_class.class_doc_string}
@@ -151,11 +162,106 @@ class MarkdownSerializer(GenDocSerializer):
             class_markdown.append("### Keywords(s)")
             for keyword in entity_class.class_keywords:
                 class_markdown.append(f"+ {self.convert_assign(keyword)[0]}")
+        if converted_doc_string.get("attributes"):
+            class_markdown.append("### Attributes(s)")
+            for attr, value in converted_doc_string.get("attributes").items():
+                tmp_annotations = ""
+                if value["type"]:
+                    tmp_annotations = ":" + value["type"]
+
+                class_markdown.append(f"+ {attr}`{tmp_annotations} - {value['doc']}")
+        if converted_doc_string["extra_params"]:
+            class_markdown.append("### Extra Parameter(s) ")
+            for key, value in converted_doc_string["extra_params"].items():
+                class_markdown.append(f"+ `{key}` - {value} ")
+
+        if converted_doc_string["example"]:
+            class_markdown.append("### Example ")
+            class_markdown.append(
+                f"""```{self._language}
+{converted_doc_string["example"]}
+```
+"""
+            )
+        if converted_doc_string["note"]:
+            class_markdown.append("### Note ")
+            class_markdown.append(
+                f"""```text
+{converted_doc_string["note"]}
+```
+"""
+            )
+        if converted_doc_string["to_do"]:
+            class_markdown.append("### ToDo(s) ")
+            for todo in converted_doc_string["to_do"]:
+                class_markdown.append(f"+ {todo}")
         if entity_class.class_entities:
             class_markdown.append("### SubElement(s)")
             for ent in entity_class.class_entities:
                 class_markdown.append(self.convert_sub_code(ent))
         return class_markdown
+
+    @staticmethod
+    def convert_parse_docs(
+        parse_docs: Optional[ParsedDocString],
+    ) -> Dict[str, Any]:
+        if not parse_docs:
+            return dict(
+                description="",
+                example="",
+                returns={"doc": "", "type": ""},
+                yields={"doc": "", "type": ""},
+                note="",
+                extra_params=dict(),
+                to_do=list(),
+                args=dict(),
+                attributes=dict(),
+                raises=dict(),
+            )
+        dict_converted = {
+            "description": parse_docs.description,
+            "example": parse_docs.example,
+            "note": parse_docs.note,
+            "returns": {
+                "doc": parse_docs.returns.param_description,
+                "type": parse_docs.returns.param_type,
+            }
+            if parse_docs.returns
+            else {},
+            "yields": {
+                "doc": parse_docs.yields.param_description,
+                "type": parse_docs.yields.param_type,
+            }
+            if parse_docs.yields
+            else {},
+            "args": {
+                arg_d.param_name: {
+                    "doc": arg_d.param_description,
+                    "type": arg_d.param_type,
+                }
+                for arg_d in parse_docs.args
+            }
+            if parse_docs.args
+            else {},
+            "attributes": {
+                arg_d.param_name: {
+                    "doc": arg_d.param_description,
+                    "type": arg_d.param_type,
+                }
+                for arg_d in parse_docs.attributes
+            }
+            if parse_docs.attributes
+            else {},
+            "raises": [
+                {"doc": raise_d.param_description, "type": raise_d.param_type}
+                for raise_d in parse_docs.raises
+            ]
+            if parse_docs.raises
+            else [],
+            "to_do": parse_docs.to_do,
+            "extra_params": parse_docs.extra_params,
+        }
+        return dict_converted
 
     def convert_function(self, entity_function: Function) -> List[str]:
         """
@@ -163,38 +269,6 @@ class MarkdownSerializer(GenDocSerializer):
         :param Function entity_function: entity function
         :return: serialized function
         """
-
-        def convert_parse_docs(
-            parse_docs: Optional[ParsedDocString],
-        ) -> Dict[str, Any]:
-            if not parse_docs:
-                return dict(
-                    description="",
-                    example="",
-                    returns={"doc": "", "type": ""},
-                    args=dict(),
-                    raises=dict(),
-                )
-            dict_converted = {
-                "description": parse_docs.description,
-                "example": parse_docs.example,
-                "returns": {
-                    "doc": parse_docs.returns.param_description,
-                    "type": parse_docs.returns.param_type,
-                },
-                "args": {
-                    arg_d.param_name: {
-                        "doc": arg_d.param_description,
-                        "type": arg_d.param_type,
-                    }
-                    for arg_d in parse_docs.args
-                },
-                "raises": [
-                    {"doc": raise_d.param_description, "type": raise_d.param_type}
-                    for raise_d in parse_docs.raises
-                ],
-            }
-            return dict_converted
 
         def get_arg_str(arg_name: Argument, _converted_doc_string) -> str:
             tmp_annotations = self.convert_entity(arg_name.annotation)
@@ -222,7 +296,7 @@ class MarkdownSerializer(GenDocSerializer):
             return args_markdown
 
         function_markdown = list()  # type: List[str]
-        converted_doc_string = convert_parse_docs(
+        converted_doc_string = self.convert_parse_docs(
             entity_function.function_parsed_docstring
         )
         async_text = ""
@@ -304,6 +378,23 @@ class MarkdownSerializer(GenDocSerializer):
                     f"#### Declared returns: "
                     f"`{converted_doc_string['returns']['type']}`"
                 )
+        if converted_doc_string["yields"].get("doc"):
+            function_markdown.append("### Yield")
+            function_markdown.append(
+                f"""```text
+{converted_doc_string["yields"]["doc"]}
+```
+"""
+            )
+        if converted_doc_string["yields"].get("type"):
+            function_markdown.append(
+                f"#### Declared yields: " f"`{converted_doc_string['yields']['type']}`"
+            )
+        if converted_doc_string["extra_params"]:
+            function_markdown.append("### Extra Parameter(s) ")
+            for key, value in converted_doc_string["extra_params"].items():
+                function_markdown.append(f"+ `{key}` - {value} ")
+
         if converted_doc_string["example"]:
             function_markdown.append("### Example ")
             function_markdown.append(
@@ -312,6 +403,19 @@ class MarkdownSerializer(GenDocSerializer):
 ```
 """
             )
+        if converted_doc_string["note"]:
+            function_markdown.append("### Note ")
+            function_markdown.append(
+                f"""```
+{converted_doc_string["note"]}
+```
+"""
+            )
+        if converted_doc_string["to_do"]:
+            function_markdown.append("### ToDo(s) ")
+            for todo in converted_doc_string["to_do"]:
+                function_markdown.append(f"+ {todo}")
+
         if entity_function.function_entities:
             function_markdown.append("### SubElement(s)")
             for ent in entity_function.function_entities:

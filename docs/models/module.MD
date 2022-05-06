@@ -53,7 +53,17 @@ Models for module
  > `args`: List[Parameter] = Field(None, description='Parsed arguments')
  > `raises`: List[Parameter] = Field(None, description='Parsed raises of function')
  > `returns`: Parameter = Field(None, description='Parsed return values of function')
+ > `yields`: Parameter = Field(None, description='Parsed yield values of function')
+ > `note`: str = Field(None, description='Parsed note')
  > `example`: str = Field(None, description='Parsed example')
+ > `extra_params`: Optional[Dict[str, str]] = Field(None, description='Parsed extra')
+ > `to_do`: Optional[List[str]] = Field(None, description='Parsed arguments')
+ > `attributes`: Optional[List[Parameter]] = Field(None, description='Parsed arguments')
+ > ## Function  `_get_numerical_equivalent_of_parsing`
+ > #### Declared returns: `int`
+ > ## Function  `__lt__`
+ > ### Argument(s)
+ > + `other` - empty doc string
 ## Class `Function`
 ### Basses(s)
 + EntityOfCode
@@ -85,4 +95,5 @@ Models for module
  > `class_decorators`: List[Entity] = Field(None, description='Class decorators')
  > `class_bases`: List[Entity] = Field(None, description='Class bases')
  > `class_keywords`: List[Assign] = Field(None, description='Class keywords')
- > `class_entities`: List[EntityOfCode] = Field(None, description='Sub entities current class')
+ > `class_entities`: List[EntityOfCode] = Field(None, description='Sub entities current class')
+ > `class_parsed_docstring`: Optional[ParsedDocString] = Field(None, description='Docstring object resolved to object')
