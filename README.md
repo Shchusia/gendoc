@@ -24,9 +24,15 @@ pip install gen_doc
 #### General
 ```text
 Usage: gen_doc [OPTIONS] COMMAND [ARGS]...
+
   Utility for generating project documentation from docstrings
+
 Options:
-  --help  Show this message and exit.
+  -v, --version  Get library version
+  -i, --init     Init gen_doc config with default parameters
+  -b, --build    Build documentation by config
+  --help         Show this message and exit.
+
 Commands:
   build  Build documentation
   init   To init config file in order to generate documentation.

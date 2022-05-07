@@ -1,6 +1,7 @@
 """
 commands to build documentation
 """
+
 import click
 
 from gen_doc.doc_generator import DocGenerator
@@ -8,14 +9,63 @@ from gen_doc.extensions import GenDocParsers
 from gen_doc.serializers import GenDocSerializers
 from gen_doc.utils.config_handler import copy_config, load_config
 
+from .utils.command_utils import GroupWithCommandOptions
+from .utils.utils import get_version
 
-@click.group(help="Utility for generating project documentation from docstrings")
-def entry_point():
-    pass
+
+@click.group(
+    help="Utility for generating project documentation from docstrings",
+    cls=GroupWithCommandOptions,
+    context_settings=dict(
+        ignore_unknown_options=True,
+    ),
+)
+@click.option(
+    "-v",
+    "--version",
+    "version",
+    is_flag=True,
+    required=False,
+    default=False,
+    help="Get library version",
+    type=bool,
+)
+@click.option(
+    "-i",
+    "--init",
+    "init_var",
+    is_flag=True,
+    required=False,
+    default=False,
+    help="Init gen_doc config with default parameters",
+    type=bool,
+)
+@click.option(
+    "-b",
+    "--build",
+    "build_var",
+    is_flag=True,
+    required=False,
+    default=False,
+    help="Build documentation by config",
+    type=bool,
+)
+@click.pass_context
+def entry_point(ctx, version, init_var, build_var):
+    if version:
+        print("GenDoc Version:", get_version())
+    if init_var:
+        ctx.invoke(init)
+    if build_var:
+        ctx.invoke(build, config=True)
 
 
 @entry_point.command(
-    "init", help="To init config file in order to generate documentation."
+    "init",
+    help="To init config file in order to generate documentation.",
+    context_settings=dict(
+        ignore_unknown_options=True,
+    ),
 )
 @click.option(
     "-f",
@@ -37,7 +87,7 @@ def entry_point():
     help="To overwrite, in case file already exists",
     type=bool,
 )
-def init(file_config: str, overwrite: bool):
+def init(file_config: str = "gen_doc.yaml", overwrite: bool = False, *args, **kwargs):
     welcome_string = """Config was created"""
     is_correct = copy_config(file_config, overwrite)
     if not is_correct:
@@ -45,7 +95,13 @@ def init(file_config: str, overwrite: bool):
     print(welcome_string)
 
 
-@entry_point.command("build", help="Build documentation")
+@entry_point.command(
+    "build",
+    help="Build documentation",
+    context_settings=dict(
+        ignore_unknown_options=True,
+    ),
+)
 @click.argument(
     "language",
     required=False,
@@ -138,6 +194,8 @@ def build(
     path_to_save,
     file_to_save,
     file_config,
+    *args,
+    **kwargs,
 ):
     if config:
         configs = load_config(file_config)
