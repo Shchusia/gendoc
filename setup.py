@@ -63,6 +63,7 @@ setup(
         ]
     },
     install_requires=[
+        "astunparse==1.6.3",
         "click==8.1.2",
         "pydantic==1.9.0",
         "PyYAML==6.0",
