@@ -8,6 +8,11 @@ from ast import stmt
 from pathlib import Path
 from typing import List, Optional, Union
 
+try:
+    from ast import unparse
+except ImportError:
+    from astunparse import unparse  # type: ignore
+
 from gen_doc.extensions.parser import GenDocParser
 
 from ...models import (
@@ -156,7 +161,12 @@ class GenDocPythonParser(GenDocParser):
 
         else:
             self._logger.debug("Not processed: %s", obj)
-            return Entity(e_type=EnumTypeVariables.UNPARSE, e_value=[ast.unparse(obj)])
+            try:
+                return Entity(e_type=EnumTypeVariables.UNPARSE, e_value=[unparse(obj)])
+            except AttributeError:
+                return Entity(
+                    e_type=EnumTypeVariables.NAME, e_value=["<UnparsedObject>"]
+                )
 
     def _parse_assign(self, obj: Union[ast.Assign, ast.AnnAssign]) -> Assign:
         """

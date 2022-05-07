@@ -4,39 +4,41 @@ Module with python Google docstrings parser
 import re
 from typing import List, Optional, Tuple
 
+from gen_doc.extensions.python.utils.utils import strip_rows
 from gen_doc.models import Parameter, ParsedDocString
 
 from .base_parser import PythonDocStringParser
-from .utils import strip_rows
 
-GENERAL_STOPPERS = r"(?:(?=Args:)|(?=Returns:)|(?=Raises:)|(?=Attributes:)|(?=Example:)|(?=Todo:)|(?=Note:)|(?=Yields:)|(?=\.\. \_)|\Z)"  # noqa
+GENERAL_STOPPERS = r"(?:(?=Args:)|(?=Arguments?:)|(?=Returns?:)|(?=Raises?:)|(?=Attributes?:)|(?=Examples?:)|(?=Todo?:)|(?=Notes?:)|(?=Yields?:)|(?=\.\. \_)|\Z)"  # noqa
 
 DESCRIPTION_REGEX = re.compile(f"(?P<description>.*?){GENERAL_STOPPERS}", re.S)  # noqa
 
-ARGS_REGEX = re.compile(f"Args:?\s (?P<args_doc>.*?){GENERAL_STOPPERS}", re.S)  # noqa
+ARGS_REGEX = re.compile(
+    f"(Args|Arguments?):?\s (?P<args_doc>.*?){GENERAL_STOPPERS}", re.S  # noqa
+)
 RETURNS_REGEX = re.compile(
-    f"Returns:?\s (?P<returns_doc>.*?){GENERAL_STOPPERS}", re.S  # noqa
+    f"Returns?:?\s (?P<returns_doc>.*?){GENERAL_STOPPERS}", re.S  # noqa
 )
 YIELDS_REGEX = re.compile(
-    f"Yields:?\s (?P<yields_doc>.*?){GENERAL_STOPPERS}", re.S  # noqa
+    f"Yields?:?\s (?P<yields_doc>.*?){GENERAL_STOPPERS}", re.S  # noqa
 )
 
 RAISES_REGEX = re.compile(
-    f"Raises:?\s (?P<raises_doc>.*?){GENERAL_STOPPERS}", re.S  # noqa
+    f"Raises?:?\s (?P<raises_doc>.*?){GENERAL_STOPPERS}", re.S  # noqa
 )
 ATTRIBUTES_REGEX = re.compile(
-    f"Attributes:?\s (?P<attribute_doc>.*?){GENERAL_STOPPERS}", re.S  # noqa
+    f"Attributes?:?\s (?P<attribute_doc>.*?){GENERAL_STOPPERS}", re.S  # noqa
 )
 EXAMPLE_REGEX = re.compile(
-    f"Example:?\s (?P<example_doc>.*?){GENERAL_STOPPERS}", re.S  # noqa
+    f"Examples?:?\s (?P<example_doc>.*?){GENERAL_STOPPERS}", re.S  # noqa
 )
-NOTE_REGEX = re.compile(f"Note:?\s (?P<note_doc>.*?){GENERAL_STOPPERS}", re.S)  # noqa
-TODO_REGEX = re.compile(f"Todo:?\s (?P<todo_doc>.*?){GENERAL_STOPPERS}", re.S)  # noqa
+NOTE_REGEX = re.compile(f"Notes?:?\s (?P<note_doc>.*?){GENERAL_STOPPERS}", re.S)  # noqa
+TODO_REGEX = re.compile(f"Todos?:?\s (?P<todo_doc>.*?){GENERAL_STOPPERS}", re.S)  # noqa
 OPTIONAL_ARGS_REGEX = re.compile(
     f"\.\. \_(?P<optional_name>[\*\w\s]+):?\s (?P<optional_doc>.*?){GENERAL_STOPPERS}",  # noqa
     re.S,  # noqa
 )
-STOPPERS_ATTR_ARG = r"(?:(?=[\*\w\s]+ ?\([\*\w\s\[\]\,]+\):)|(?=[\*\w\s]+:)|\Z)"  # noqa
+STOPPERS_ATTR_ARG = r"(?:(?=[\r\n?|\n]{1,}[ \t\d\w\(\)\]\[\,]+:)|\Z)"  # noqa
 
 RETURN_YIELD_PARSERS_REGEX = re.compile(
     f"(?P<type>[\s\d\w\(\)\]\[\\,]+): (?P<return_doc>.*?){STOPPERS_ATTR_ARG}",  # noqa
@@ -46,7 +48,7 @@ STOPPERS_TODOS = r"(?:(?=\*)|\Z)"  # noqa
 TODOS_PARSER_REGEX = re.compile(f"\* (?P<to_do>.*?){STOPPERS_TODOS}", re.S)  # noqa
 
 PARAM_REGEX = re.compile(
-    f"(?P<param>[\s\d\w\(\)\]\[\\,]+): (?P<param_doc>.*?){STOPPERS_ATTR_ARG}",  # noqa
+    f"\s(?P<param>[\s\d\w\(\)\]\[\,]+): (?P<param_doc>.*?){STOPPERS_ATTR_ARG}",  # noqa
     re.S,  # noqa
 )
 PARSE_PARAM_TYPE = re.compile(
@@ -64,10 +66,11 @@ class GoogleDocStringPyParser(PythonDocStringParser):
 
     Description of function
 
-    Args:
+    Arguments:
         value1 (int): description to value1
         value2 (Dict[str, str]): description to value2
-          long description value2
+          long description
+          value2 desc
         value3: description value3
     Attributes:
         value4 (int): description to value4
@@ -77,7 +80,7 @@ class GoogleDocStringPyParser(PythonDocStringParser):
             that are relevant to the interface.
     Returns:
         type_returned_value: a description of return
-    Todo:
+    Todos:
         * For module TODOs
         * ToDo
           long
@@ -86,7 +89,7 @@ class GoogleDocStringPyParser(PythonDocStringParser):
     .. _PEP 484:
         https://www.python.org/dev/peps/pep-0484/
     Yields:
-        int: yield value with tupe
+        int: yield value with type
     Note:
         Do not include the `self` parameter in the ``Args`` section.
     Example:
@@ -190,3 +193,9 @@ class GoogleDocStringPyParser(PythonDocStringParser):
             notes_str = notes.group("note_doc")
             parsed_doc_string.note = strip_rows(notes_str)
         return parsed_doc_string
+
+
+if __name__ == "__main__":
+    parser = GoogleDocStringPyParser()
+    res = parser.parse(parser.example)
+    print(res.returns)
