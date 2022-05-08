@@ -42,44 +42,97 @@ callable
  > ## Function  `decorator`
  > ### Argument(s)
  > + `function` - empty doc string
- > #### Declared returns: `None`
  > ### SubElement(s)
  > > ## Function  `wrapper`
  > > ### Argument(s)
  > > + *`args` - empty doc string
- > > + **`kwargs` - empty doc string
- > > #### Declared returns: `None`
+ > > + **`kwargs` - empty doc string
 ## Function `async` `async_function_with_doc_string`
 ```text
-async function
+function doc string with sphinx style
+with long description
 ```
         
-### Raise(s)
-+ `RunTimeError` - error in run
-#### Declared returns: `None`
-### Example 
-```python
->>> import time
->>> time.sleep(2)
+### Return
+```text
+what return function
+```
+                    
+#### Declared returns: `type returned value`
+### Yield
+```text
+if yield function
 ```
 
+#### Declared yields: `for yield value`
+### Example 
+```python
+>>> import this
+>>> # and other imports
+```
+
+### Note 
+```
+note string
+with some information
+```
+
+### ToDo(s) 
++ todo1
++ todo2
+with description
 ## Function  `function_without_doc_string`
 ### Argument(s)
 + `arg1` - empty doc string
 + *`args` - empty doc string
-#### Declared returns: `None`
+## Function  `function_google_docstring`
+```text
+function doc string with google style
+with long description
+```
+        
+### Argument(s)
++ `val1`: int - empty doc string
++ `val2`: List[Tuple[str, str]] - empty doc string
+### Raise(s)
++ `AttributeError` - The ``Raises`` section is a list of all exceptions
+that are relevant to the interface.
+### Return
+```text
+A dict value description
+```
+                    
+#### Declared returns: `Dict[str, str]`
+### Extra Parameter(s) 
++ `Google Python Style Guide` - http://google.github.io/styleguide/pyguide.html 
++ `PEP 484` - https://www.python.org/dev/peps/pep-0484/ 
+### Example 
+```python
+Examples should be written in doctest format, and should illustrate how
+to use the function.
+>>> print([i for i in example_generator(4)])
+[0, 1, 2, 3]
+```
+
+### Note 
+```
+Do not include the `self` parameter in the ``Args`` section.
+```
+
+### ToDo(s) 
++ For module TODOs
++ You have to also use
+``sphinx.ext.todo`` extension
 ## Function  `function_posonlyargs`
 ### Argument(s)
 + `arg_1` - empty doc string
 + `arg_2` - empty doc string
 + `arg_3` - empty doc string
-#### Declared returns: `None`
 ## Function  `function_kwonlyargs`
 ### Argument(s)
 + `arg_1` - empty doc string
 + `arg_2` - empty doc string
 + `arg_3` - empty doc string
-#### Declared returns: `None`
 ## Function  `test_func`
 ```text
 Test function with decorator with parameters
@@ -106,6 +159,30 @@ example class
 ### Basses(s)
 + ABC
 ## Class `Second`
+```text
+Class with google doc style
+```
+
+### Attributes(s)
++ attribute_1`:int - 
++ description attribute_1
+    attribute_2`:List[int] - description attribute_2
+### Example 
+```python
+Examples should be written in doctest format, and should illustrate how
+to use the function.
+>>> sec_class = Second()
+>>> sec_class.attribute_1
+1
+```
+
+### Note 
+```text
+Do not include the `self` parameter in the ``Args`` section.
+```
+
+### SubElement(s)
+ > ## Function  `__init__`
 ## Class `ExampleClass`
 ```text
 ExampleClass
@@ -125,7 +202,12 @@ ExampleClass
  > 
  > ### Decorator(s)
  > + property
- > #### Declared returns: `None`
+ > ### Return
+ > ```text
+ > value
+ > ```
+ > 
+ > #### Declared returns: `str`
  > ## Function  `value`
  > ```text
  > setter
@@ -134,16 +216,14 @@ ExampleClass
  > ### Decorator(s)
  > + value.setter
  > ### Argument(s)
- > + `value` - empty doc string
- > #### Declared returns: `None`
+ > + `value`: str - empty doc string
  > ## Function  `test_func`
  > ```text
  > class test function
  > ```
  > 
  > ### Decorator(s)
- > + abstractmethod
- > #### Declared returns: `None`
+ > + abstractmethod
  > ## Function  `test_static`
  > ```text
  > test staticmethod

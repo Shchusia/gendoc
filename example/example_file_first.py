@@ -4,7 +4,7 @@ First example_file
 # pylint: disable=unused-argument, unnecessary-pass, invalid-name
 import re
 from abc import ABC, abstractmethod
-from typing import Callable, Dict, List
+from typing import Callable, Dict, List, Tuple
 
 BASE_VALUE = 1  # type: int
 CONST_VAL_FIRST: str = "first_test_const_value"
@@ -53,12 +53,28 @@ def decorator_factory(arg1: bool, arg2: int = 1, arg3: float = 1) -> Callable:
 
 async def async_function_with_doc_string():
     """
-    async function
-    :raises RunTimeError: error in run
-    :return:
+    function doc string with sphinx style
+    with long description
+
+    :param value1: description to value1
+    :type value1: str
+    :param List[str] value2: description to value2
+    :attr value3: description to value3
+    :type value3: Dict[str, str]
+    :attr List[Tuple[str, str]] value4: description to value3
+    :return: what return function
+    :rtype: type returned value
+    :yield: if yield function
+    :ytype: for yield value
+    :note: note string
+    with some information
+    :todo: todo1
+    :todo: todo2
+    with description
     :example:
-    >>> import time
-    >>> time.sleep(2)
+    >>> import this
+    >>> # and other imports
+
     """
     pass
 
@@ -68,6 +84,37 @@ def function_without_doc_string(
     *args,
 ):
     pass
+
+
+def function_google_docstring(val1: int, val2: List[Tuple[str, str]]) -> Dict[str, str]:
+    """
+    function doc string with google style
+        with long description
+
+    Args:
+        val1 (int): description
+        val2 (List[Tuple[str,str]]): Long description
+    Raises:
+        AttributeError: The ``Raises`` section is a list of all exceptions
+            that are relevant to the interface.
+    Returns:
+        Dict[str, str]: A dict value description
+    Todo:
+        * For module TODOs
+        * You have to also use
+          ``sphinx.ext.todo`` extension
+    .. _Google Python Style Guide:
+        http://google.github.io/styleguide/pyguide.html
+    .. _PEP 484:
+        https://www.python.org/dev/peps/pep-0484/
+    Note:
+        Do not include the `self` parameter in the ``Args`` section.
+    Example:
+        Examples should be written in doctest format, and should illustrate how
+        to use the function.
+        >>> print([i for i in example_generator(4)])
+        [0, 1, 2, 3]
+    """
 
 
 def function_posonlyargs(arg_1, /, arg_2, arg_3):
@@ -111,6 +158,28 @@ class First(ABC):
 
 
 class Second:
+    """
+    Class with google doc style
+    Attributes:
+        attribute_1 (int): description attribute_1
+        attribute_2 (List[int]): description attribute_2
+    Raises:
+        AttributeError: The ``Raises`` section is a list of all exceptions
+            that are relevant to the interface.
+    Note:
+        Do not include the `self` parameter in the ``Args`` section.
+    Example:
+        Examples should be written in doctest format, and should illustrate how
+        to use the function.
+        >>> sec_class = Second()
+        >>> sec_class.attribute_1
+        1
+    """
+
+    def __init__(self):
+        self.attribute_1 = 1
+        self.attribute_2 = list()
+
     pass
 
 
@@ -123,19 +192,19 @@ class ExampleClass(ABC, metaclass=First):  # type: ignore
     _value_2 = 2
 
     @property
-    def value(self):
+    def value(self) -> str:
         """
         property value
-        :return:
+        :return: value
+        :rtype: str
         """
         return self._value
 
     @value.setter
-    def value(self, value=1) -> None:
+    def value(self, value: str = "new_str") -> None:
         """
         setter
         :param value:
-        :return:
         """
         self._value = value
 

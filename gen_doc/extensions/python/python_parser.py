@@ -8,6 +8,11 @@ from ast import stmt
 from pathlib import Path
 from typing import List, Optional, Union
 
+try:
+    from ast import unparse
+except ImportError:
+    from astunparse import unparse  # type: ignore
+
 from gen_doc.extensions.parser import GenDocParser
 
 from ...models import (
@@ -21,7 +26,7 @@ from ...models import (
     Operations,
 )
 from ...models.module import Argument, Arguments
-from .utils.parser_python_sphinx_docstring import parse_docstring
+from .utils import DocStingPyParser
 
 ARGUMENTS_TO_IGNORE = ["self"]
 
@@ -82,7 +87,7 @@ class GenDocPythonParser(GenDocParser):
         elif isinstance(obj, (ast.FunctionDef, ast.AsyncFunctionDef)):
             return self._parse_function(obj)
         else:
-            self._logger.warn("can't parse %s", obj)
+            self._logger.debug("Can't parse %s", obj)
         return None
 
     def _parse_value(self, obj: ast.expr) -> Entity:
@@ -155,8 +160,13 @@ class GenDocPythonParser(GenDocParser):
             return Entity(e_type=EnumTypeVariables.NAME, e_value=["..."])
 
         else:
-            self._logger.warn("Not processed: %s", obj)
-            return Entity(e_type=EnumTypeVariables.UNPARSE, e_value=[ast.unparse(obj)])
+            self._logger.debug("Not processed: %s", obj)
+            try:
+                return Entity(e_type=EnumTypeVariables.UNPARSE, e_value=[unparse(obj)])
+            except AttributeError:
+                return Entity(
+                    e_type=EnumTypeVariables.NAME, e_value=["<UnparsedObject>"]
+                )
 
     def _parse_assign(self, obj: Union[ast.Assign, ast.AnnAssign]) -> Assign:
         """
@@ -188,6 +198,7 @@ class GenDocPythonParser(GenDocParser):
         clazz.class_bases = self._parse_basses(obj)
         clazz.class_entities = self._parse_body(obj)
         clazz.class_keywords = self._parse_keywords(obj)
+        clazz.class_parsed_docstring = DocStingPyParser.parse(clazz.class_doc_string)
         return clazz
 
     def _parse_decorators(
@@ -242,7 +253,7 @@ class GenDocPythonParser(GenDocParser):
             function_args=self._parse_arguments(obj.args),
             function_entities=self._parse_body(obj, is_inner=True),
             function_type_comment=obj.type_comment,
-            function_parsed_docstring=parse_docstring(ast.get_docstring(obj)),
+            function_parsed_docstring=DocStingPyParser.parse(ast.get_docstring(obj)),
         )
         if isinstance(obj, ast.AsyncFunctionDef):
             _function.function_is_async = True

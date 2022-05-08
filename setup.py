@@ -3,31 +3,13 @@ Setup GenDoc
 """
 import os
 import pathlib
-import re
-from typing import Optional
 
 from setuptools import setup
 
+from gen_doc.utils.utils import get_version
+
 LIB_NAME = "gen_doc"
 HERE = pathlib.Path(__file__).parent
-
-
-def get_version() -> Optional[str]:
-    """
-      Method for getting the version of the library from the init file
-    :requirements: version must be specified separately
-        :good: __version__ = '0.0.1'
-        :bad: __version__, __any_variable__ = '0.0.1', 'any_value'
-    :return: version lib
-    """
-
-    txt = (HERE / LIB_NAME / "__init__.py").read_text("utf-8")
-    txt = txt.replace("'", '"')
-    try:
-        version = re.findall(r'^__version__ = "([^"]+)"\r?$', txt, re.M)[0]
-        return version
-    except IndexError:
-        raise RuntimeError("Unable to determine version.")
 
 
 def get_packages():
@@ -47,7 +29,7 @@ def get_packages():
 setup(
     name=LIB_NAME,
     version=get_version(),
-    description="Module for build documentation",
+    description="Library to generate documentation",
     author="Denis Shchutkiy",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
@@ -63,6 +45,7 @@ setup(
         ]
     },
     install_requires=[
+        "astunparse==1.6.3",
         "click==8.1.2",
         "pydantic==1.9.0",
         "PyYAML==6.0",
