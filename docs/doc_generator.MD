@@ -1,15 +1,15 @@
-# Module `doc_generator.py`
+# Module `doc_generator.py`
 ```text
 Main module with the class that works with the catalog
 ```
-
-> Path: `gen_doc\doc_generator.py`
-## Class `DocGenerator`
+
+> Path: `gen_doc/doc_generator.py`
+## Class `DocGenerator`
 ```text
 Class for generating project documentation
 ```
-
-### SubElement(s)
+
+### SubElement(s)
  > ## Function  `__init__`
  > ```text
  > Init config loader
@@ -37,7 +37,7 @@ Class for generating project documentation
  > + `additional_files_to_ignore`: Optional[List[str]] - Additional files that should not
  > be included in the documentation
  > + `additional_folders_to_ignore`: Optional[List[str]] - Additional directories that should
- > not be included in the documentation
+ > not be included in the documentation
  > ## Function  `generate`
  > ```text
  > Function to run process generate documentation

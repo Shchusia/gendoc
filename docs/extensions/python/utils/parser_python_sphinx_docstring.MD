@@ -1,31 +1,31 @@
-# Module `parser_python_sphinx_docstring.py`
+# Module `parser_python_sphinx_docstring.py`
 ```text
 Module with python Sphinx docstrings parser
 ```
-
-> Path: `gen_doc\extensions\python\utils\parser_python_sphinx_docstring.py`
-`GENERAL_STOPPERS` = "(?:(?=:param)|(?=:attr)|(?=:return)|(?=:yield)|(?=:note)|(?=:raises)|(?=:type)|(?=:rtype)|(?=:ytype)|(?=:todo)|(?=:example)|(?=\.\. code-block::)|\Z)"
-`DESCRIPTION_REGEX` = re.compile(f'(?P<description_method>.*?){GENERAL_STOPPERS}', re.S)
-`PARAM_REGEX` = re.compile(f':param (?P<param>[\\*\\w\\s\\[\\]\\,]+): (?P<param_doc>.*?){GENERAL_STOPPERS}', re.S)
-`ATTR_REGEX` = re.compile(f':attr (?P<attr>[\\*\\w\\s\\[\\]\\,]+): (?P<attr_doc>.*?){GENERAL_STOPPERS}', re.S)
-`TYPE_REGEX` = re.compile(f':type (?P<param>[\\*\\w\\s]+): (?P<type>.*?){GENERAL_STOPPERS}', re.S)
-`RAISES_REGEX` = re.compile(f':raises (?P<error_type>[\\*\\w\\s]+): (?P<error_type_doc>.*?){GENERAL_STOPPERS}', re.S)
-`NOTE_REGEX` = re.compile(f':note:(?P<note_doc>.*?){GENERAL_STOPPERS}', re.S)
-`TODO_REGEX` = re.compile(f':todo:(?P<todo_doc>.*?){GENERAL_STOPPERS}', re.S)
-`RETURNS_REGEX` = re.compile(f':return:(?P<return_doc>.*?){GENERAL_STOPPERS}', re.S)
-`YIELD_REGEX` = re.compile(f':yield:(?P<yield_doc>.*?){GENERAL_STOPPERS}', re.S)
-`RETURN_TYPE_REGEX` = re.compile(f':rtype: (?P<rtype>.*?){GENERAL_STOPPERS}', re.S)
-`YIELD_TYPE_REGEX` = re.compile(f':ytype: (?P<ytype>.*?){GENERAL_STOPPERS}', re.S)
-`EXAMPLE_REGEX` = re.compile(f'\\.\\. code-block:: (?P<language>[\\*\\w\\s]+)(?P<example>.*?){GENERAL_STOPPERS}', re.S)
-`EXAMPLE_REGEX_2` = re.compile(f':example:(?P<example>.*?){GENERAL_STOPPERS}', re.S)
-## Class `SphinxDocStringPyParser`
+
+> Path: `gen_doc/extensions/python/utils/parser_python_sphinx_docstring.py`
+`GENERAL_STOPPERS` = "(?:(?=:param)|(?=:attr)|(?=:return)|(?=:yield)|(?=:note)|(?=:raises)|(?=:type)|(?=:rtype)|(?=:ytype)|(?=:todo)|(?=:example)|(?=\.\. code-block::)|\Z)"
+`DESCRIPTION_REGEX` = re.compile(f'(?P<description_method>.*?){GENERAL_STOPPERS}', re.S)
+`PARAM_REGEX` = re.compile(f':param (?P<param>[\\*\\w\\s\\[\\]\\,]+): (?P<param_doc>.*?){GENERAL_STOPPERS}', re.S)
+`ATTR_REGEX` = re.compile(f':attr (?P<attr>[\\*\\w\\s\\[\\]\\,]+): (?P<attr_doc>.*?){GENERAL_STOPPERS}', re.S)
+`TYPE_REGEX` = re.compile(f':type (?P<param>[\\*\\w\\s]+): (?P<type>.*?){GENERAL_STOPPERS}', re.S)
+`RAISES_REGEX` = re.compile(f':raises (?P<error_type>[\\*\\w\\s]+): (?P<error_type_doc>.*?){GENERAL_STOPPERS}', re.S)
+`NOTE_REGEX` = re.compile(f':note:(?P<note_doc>.*?){GENERAL_STOPPERS}', re.S)
+`TODO_REGEX` = re.compile(f':todo:(?P<todo_doc>.*?){GENERAL_STOPPERS}', re.S)
+`RETURNS_REGEX` = re.compile(f':return:(?P<return_doc>.*?){GENERAL_STOPPERS}', re.S)
+`YIELD_REGEX` = re.compile(f':yield:(?P<yield_doc>.*?){GENERAL_STOPPERS}', re.S)
+`RETURN_TYPE_REGEX` = re.compile(f':rtype: (?P<rtype>.*?){GENERAL_STOPPERS}', re.S)
+`YIELD_TYPE_REGEX` = re.compile(f':ytype: (?P<ytype>.*?){GENERAL_STOPPERS}', re.S)
+`EXAMPLE_REGEX` = re.compile(f'\\.\\. code-block:: (?P<language>[\\*\\w\\s]+)(?P<example>.*?){GENERAL_STOPPERS}', re.S)
+`EXAMPLE_REGEX_2` = re.compile(f':example:(?P<example>.*?){GENERAL_STOPPERS}', re.S)
+## Class `SphinxDocStringPyParser`
 ```text
 Sphinx doc string parser
 ```
-
-### Basses(s)
-+ PythonDocStringParser
-### SubElement(s)
+
+### Basses(s)
++ PythonDocStringParser
+### SubElement(s)
  > `example` = "
  > Object doc string
  > with long description
@@ -49,7 +49,7 @@ Sphinx doc string parser
  > :example:
  > >>> import this
  > >>> # and other imports
- > "
+ > "
  > ## Function  `parse`
  > ```text
  > Function to parse doc string to a standard object

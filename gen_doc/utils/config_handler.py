@@ -51,7 +51,7 @@ def copy_config(file_name_to_save: str, overwrite: bool) -> bool:
     :rtype: bool
     """
     config_path = (
-        Path(__file__).absolute().parent.parent / Path("src") / Path("template.yaml")
+            Path(__file__).absolute().parent.parent / Path("src") / Path("template.yaml")
     )
     path_to_config_file = normalize_name_config(file_name_to_save)
     if path_to_config_file.is_file():

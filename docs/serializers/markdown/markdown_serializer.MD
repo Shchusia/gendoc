@@ -1,31 +1,31 @@
-# Module `markdown_serializer.py`
+# Module `markdown_serializer.py`
 ```text
 Markdown serializer
 ```
-
-> Path: `gen_doc\serializers\markdown\markdown_serializer.py`
-## Class `MarkdownSerializer`
+
+> Path: `gen_doc/serializers/markdown/markdown_serializer.py`
+## Class `MarkdownSerializer`
 ```text
 Module convert parsed to pretty markdown format
 ```
-
-### Basses(s)
-+ GenDocSerializer
-### SubElement(s)
- > `short_name` = "md"
- > `suffix_file` = ".MD"
+
+### Basses(s)
++ GenDocSerializer
+### SubElement(s)
+ > `short_name` = "md"
+ > `suffix_file` = ".MD"
  > ## Function  `serialize_general_info`
  > ```text
  > Serialize general info
  > ```
  > 
- > #### Declared returns: `List[str]`
+ > #### Declared returns: `List[str]`
  > ## Function  `serialize_module`
  > ### Argument(s)
  > + `module`: Module - empty doc string
  > + *`args` - empty doc string
  > + **`kwargs` - empty doc string
- > #### Declared returns: `List[str]`
+ > #### Declared returns: `List[str]`
  > ## Function  `module_to_markdown_string`
  > ```text
  > Serializer Module to markdown
@@ -38,7 +38,7 @@ Module convert parsed to pretty markdown format
  > serialized module to list[str]
  > ```
  > 
- > #### Declared returns: `List[str]`
+ > #### Declared returns: `List[str]`
  > ## Function  `convert_module_data`
  > ```text
  > Convert base info of module
@@ -51,7 +51,7 @@ Module convert parsed to pretty markdown format
  > list of markdown
  > ```
  > 
- > #### Declared returns: `List[str]`
+ > #### Declared returns: `List[str]`
  > ## Function  `convert_entity_of_code`
  > ```text
  > Method convert base entity of code to list[str]
@@ -64,7 +64,7 @@ Module convert parsed to pretty markdown format
  > serialized entity
  > ```
  > 
- > #### Declared returns: `List[str]`
+ > #### Declared returns: `List[str]`
  > ## Function  `convert_assign`
  > ```text
  > Convert assign
@@ -77,7 +77,7 @@ Module convert parsed to pretty markdown format
  > Serialized Assign
  > ```
  > 
- > #### Declared returns: `List[str]`
+ > #### Declared returns: `List[str]`
  > ## Function  `convert_class`
  > ```text
  > Method serialize class
@@ -90,13 +90,13 @@ Module convert parsed to pretty markdown format
  > serialized class
  > ```
  > 
- > #### Declared returns: `List[str]`
+ > #### Declared returns: `List[str]`
  > ## Function  `convert_parse_docs`
  > ### Decorator(s)
  > + staticmethod
  > ### Argument(s)
  > + `parse_docs`: Optional[ParsedDocString] - empty doc string
- > #### Declared returns: `Dict[str, Any]`
+ > #### Declared returns: `Dict[str, Any]`
  > ## Function  `convert_function`
  > ```text
  > Method to convert Function
@@ -119,11 +119,11 @@ Module convert parsed to pretty markdown format
  > > ## Function  `convert_args`
  > > ### Argument(s)
  > > + `args`: List[Argument] - empty doc string
- > > + `_converted_doc_string` - empty doc string
+ > > + `_converted_doc_string` - empty doc string
  > ## Function  `convert_sub_code`
  > ### Argument(s)
  > + `entity`: EntityOfCode - empty doc string
- > #### Declared returns: `str`
+ > #### Declared returns: `str`
  > ## Function  `convert_entity`
  > ```text
  > Convert entities

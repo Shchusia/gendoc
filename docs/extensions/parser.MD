@@ -1,23 +1,23 @@
-# Module `parser.py`
+# Module `parser.py`
 ```text
 Module with base file parser
 ```
-
-> Path: `gen_doc\extensions\parser.py`
-## Class `GenDocParser`
+
+> Path: `gen_doc/extensions/parser.py`
+## Class `GenDocParser`
 ```text
 Base class for parsers
 ```
-
-### Basses(s)
-+ ABC
-### SubElement(s)
+
+### Basses(s)
++ ABC
+### SubElement(s)
  > ## Function  `__init__`
  > ### Argument(s)
  > + `logger`: Optional[Logger] - empty doc string
  > + `path_to_root_folder`: Optional[Union[Path, str]] - empty doc string
  > + `additional_files_to_ignore`: Optional[List[str]] - empty doc string
- > + `additional_folders_to_ignore`: Optional[List[str]] - empty doc string
+ > + `additional_folders_to_ignore`: Optional[List[str]] - empty doc string
  > ## Function  `language`
  > ```text
  > Property for which language
@@ -34,7 +34,7 @@ Base class for parsers
  > ### Example
  > ```python
  > >>> language = "python"
- > ```
+ > ```
  > ## Function  `short_name`
  > ```text
  > Property for short name in commands
@@ -51,7 +51,7 @@ Base class for parsers
  > ### Example
  > ```python
  > >>> short_name = "py"  # for python
- > ```
+ > ```
  > ## Function  `types_of_file_to_process`
  > ```text
  > Property for concrete language
@@ -69,7 +69,7 @@ Base class for parsers
  > ### Example
  > ```python
  > >>> types_of_file_to_process = ['.py']  # for python
- > ```
+ > ```
  > ## Function  `files_to_ignore`
  > ```text
  > Which files names will not be considered
@@ -86,7 +86,7 @@ Base class for parsers
  > ### Example
  > ```python
  > >>> files_to_ignore = ['setup.py'] # for python
- > ```
+ > ```
  > ## Function  `folders_to_ignore`
  > ```text
  > Which folder names will not be considered
@@ -103,12 +103,12 @@ Base class for parsers
  > ### Example
  > ```python
  > >>> folders_to_ignore = ['__pycache__'] # for python
- > ```
+ > ```
  > ## Function  `parse_file`
  > ### Decorator(s)
  > + abstractmethod
  > ### Argument(s)
- > + `path_to_file`: Path - empty doc string
+ > + `path_to_file`: Path - empty doc string
  > ## Function  `parse`
  > ```text
  > Method parses all nested files and folders if
@@ -120,7 +120,7 @@ Base class for parsers
  > list of parsed modules
  > ```
  > 
- > #### Declared returns: `List[Module]`
+ > #### Declared returns: `List[Module]`
  > ## Function  `_is_correct_folder_to_process`
  > ```text
  > Method to check if the specified directory
