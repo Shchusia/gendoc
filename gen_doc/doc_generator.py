@@ -2,7 +2,6 @@
 Main module with the class that works with the catalog
 """
 # pylint: disable=too-many-arguments
-from collections import Iterable
 from distutils.util import strtobool
 from logging import Logger, getLogger
 from pathlib import Path
@@ -14,6 +13,11 @@ from .extensions import GenDocParser, GenDocParsers
 from .models import GeneralInfo
 from .serializers import GenDocSerializer, GenDocSerializers
 from .settings import DEFAULT_SUFFIX
+
+try:
+    from collections import Iterable  # type: ignore
+except ImportError:
+    from collections.abc import Iterable
 
 
 class DocGenerator:

@@ -1,15 +1,15 @@
-# Module `parser_doc_string.py`
+# Module `parser_doc_string.py`
 ```text
 module with class py parsers doc string
 ```
-
-> Path: `gen_doc\extensions\python\utils\parser_doc_string.py`
-## Class `DocStingPyParser`
+
+> Path: `gen_doc/extensions/python/utils/parser_doc_string.py`
+## Class `DocStingPyParser`
 ```text
 Class parsers doc string
 ```
-
-### SubElement(s)
+
+### SubElement(s)
  > ## Function  `parse`
  > ```text
  > Method parse doc string and return

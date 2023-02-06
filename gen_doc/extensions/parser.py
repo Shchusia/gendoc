@@ -3,12 +3,16 @@ Module with base file parser
 """
 import os
 from abc import ABC, abstractmethod
-from collections import Iterable
 from logging import Logger, getLogger
 from pathlib import Path
 from typing import List, Optional, Tuple, Union
 
 from gen_doc.models import Module
+
+try:
+    from collections import Iterable  # type: ignore
+except ImportError:
+    from collections.abc import Iterable
 
 
 class GenDocParser(ABC):
@@ -17,11 +21,11 @@ class GenDocParser(ABC):
     """
 
     def __init__(
-        self,
-        logger: Optional[Logger] = None,
-        path_to_root_folder: Optional[Union[Path, str]] = None,
-        additional_files_to_ignore: Optional[List[str]] = None,
-        additional_folders_to_ignore: Optional[List[str]] = None,
+            self,
+            logger: Optional[Logger] = None,
+            path_to_root_folder: Optional[Union[Path, str]] = None,
+            additional_files_to_ignore: Optional[List[str]] = None,
+            additional_folders_to_ignore: Optional[List[str]] = None,
     ):
         self._logger = logger or getLogger(__name__)
         if not path_to_root_folder:
@@ -32,11 +36,11 @@ class GenDocParser(ABC):
         self._root_folder = path_to_root_folder
 
         if not additional_files_to_ignore or not isinstance(
-            additional_files_to_ignore, Iterable
+                additional_files_to_ignore, Iterable
         ):
             additional_files_to_ignore = list()  # type: List[str] # type: ignore # noqa
         if not additional_folders_to_ignore or not isinstance(
-            additional_folders_to_ignore, Iterable
+                additional_folders_to_ignore, Iterable
         ):
             additional_folders_to_ignore = (
                 list()
@@ -122,7 +126,7 @@ class GenDocParser(ABC):
         ]
         for folder_path, list_files in list_folders_with_files_to_parse:
             if not self._is_correct_folder_to_process(
-                str(folder_path), _current_folders_to_ignore
+                    str(folder_path), _current_folders_to_ignore
             ):
                 self._logger.debug("Ignore folder %s", folder_path)
                 continue
@@ -146,7 +150,7 @@ class GenDocParser(ABC):
 
     @staticmethod
     def _is_correct_folder_to_process(
-        folder: str, folders_to_ignore: List[str]
+            folder: str, folders_to_ignore: List[str]
     ) -> bool:
         """Method to check if the specified directory
          should be processed
@@ -158,6 +162,6 @@ class GenDocParser(ABC):
         :rtype: bool
         """
         for ig_folder in folders_to_ignore:
-            if ig_folder == folder[-len(ig_folder) :]:
+            if ig_folder == folder[-len(ig_folder):]:
                 return False
         return True

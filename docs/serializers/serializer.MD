@@ -1,17 +1,17 @@
-# Module `serializer.py`
+# Module `serializer.py`
 ```text
 Module with base class for the serializers
 ```
-
-> Path: `gen_doc\serializers\serializer.py`
-## Class `GenDocSerializer`
+
+> Path: `gen_doc/serializers/serializer.py`
+## Class `GenDocSerializer`
 ```text
 Base class for the serializers
 ```
-
-### Basses(s)
-+ ABC
-### SubElement(s)
+
+### Basses(s)
++ ABC
+### SubElement(s)
  > ## Function  `__init__`
  > ### Argument(s)
  > + `path_to_save`: Optional[Path] - empty doc string
@@ -21,7 +21,7 @@ Base class for the serializers
  > + `extract_with_same_hierarchy`: Optional[bool] - empty doc string
  > + `overwrite_if_file_exists`: Optional[bool] - empty doc string
  > + `file_to_save`: Optional[Union[str, Path]] - empty doc string
- > + `general_info`: Optional[GeneralInfo] - empty doc string
+ > + `general_info`: Optional[GeneralInfo] - empty doc string
  > ## Function  `suffix_file`
  > ```text
  > File type for which this serializer is intended
@@ -34,7 +34,7 @@ Base class for the serializers
  > ".type"
  > ```
  > 
- > #### Declared returns: `str`
+ > #### Declared returns: `str`
  > ## Function  `short_name`
  > ```text
  > Property for short name in commands
@@ -51,7 +51,7 @@ Base class for the serializers
  > ### Example
  > ```python
  > >>> short_name = "md"
- > ```
+ > ```
  > ## Function  `serialize_module`
  > ```text
  > Main method for serialize module
@@ -69,7 +69,7 @@ Base class for the serializers
  > serialized module to list of string
  > ```
  > 
- > #### Declared returns: `List[str]`
+ > #### Declared returns: `List[str]`
  > ## Function  `serialize_general_info`
  > ```text
  > Method serialize general info
@@ -77,7 +77,7 @@ Base class for the serializers
  > 
  > ### Decorator(s)
  > + abstractmethod
- > #### Declared returns: `List[str]`
+ > #### Declared returns: `List[str]`
  > ## Function  `serialize`
  > ```text
  > Serialize parsed modules
@@ -89,7 +89,7 @@ Base class for the serializers
  > ```text
  > nothing
  > ```
- > 
+ > 
  > ## Function  `_save_documentation_file`
  > ```text
  > Method to save data to a file
